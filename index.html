@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Portfolio Globe — Website Mockup</title>
+<style>
+  html, body { margin:0; padding:0; overflow:hidden; background:#0a1128; height:100%; }
+  #app { position:relative; width:100vw; height:100vh;
+    background: radial-gradient(ellipse at 50% 30%, #16234a 0%, #0a1128 70%, #060c1c 100%); }
+  canvas { display:block; }
+  #hint {
+    position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+    color: rgba(255,255,255,0.55); font: 400 13px -apple-system, sans-serif;
+    pointer-events:none; letter-spacing:0.02em;
+  }
+  #loading {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    color: rgba(255,255,255,0.7); font: 500 15px -apple-system, sans-serif;
+  }
+  #nav-target {
+    position:absolute; top:24px; left:50%; transform:translateX(-50%);
+    background: rgba(255,255,255,0.1); color:#fff; padding:8px 18px; border-radius:20px;
+    font: 600 14px -apple-system, sans-serif; opacity:0; transition: opacity 0.25s ease;
+    pointer-events:none; backdrop-filter: blur(6px);
+  }
+  #nav-target.visible { opacity:1; }
+
+  #site-title {
+    position:absolute; top:30px; left:50%; transform:translateX(-50%); z-index:10;
+    pointer-events:none; text-align:center;
+  }
+  #site-title .name {
+    font-family: 'Phosphate', 'Copperplate', 'Trebuchet MS', sans-serif;
+    font-size: 36px; color:#f5f0e6; letter-spacing:0.03em; line-height:1;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+  #site-title .role {
+    font: 400 13px -apple-system, sans-serif; letter-spacing:0.2em; text-transform:uppercase;
+    color: rgba(245,240,230,0.6); margin-top:8px;
+  }
+
+  #nico-bubble {
+    position:absolute; top:0; left:0; transform:translate(-50%,-100%);
+    display:none; pointer-events:none; text-align:center;
+    font: 400 15px -apple-system, sans-serif; color:#33302a;
+  }
+  #nico-bubble .bubble-box {
+    background:#faf8f2; border-radius:22px; padding:10px 20px 12px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.35); white-space:nowrap;
+  }
+  #nico-bubble .bubble-box strong { font-size:17px; }
+  #nico-bubble .bubble-date { display:block; font-size:12px; color:#8a8375; margin-top:2px; }
+  #nico-bubble::after {
+    content:''; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%);
+    border-left:9px solid transparent; border-right:9px solid transparent;
+    border-top:10px solid #faf8f2;
+  }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./three.module.js" } }
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="site-title">
+    <div class="name">Nicolas Julia</div>
+    <div class="role">Geographer</div>
+  </div>
+  <div id="loading">Loading globe…</div>
+  <div id="hint">drag to spin &middot; hover a sign to see it pop</div>
+  <div id="nav-target"></div>
+  <div id="nico-bubble">
+    <div class="bubble-box">
+      Nico was last seen in<br>
+      <strong id="nico-bubble-place"></strong>
+      <span class="bubble-date" id="nico-bubble-date"></span>
+    </div>
+  </div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from './OrbitControls.js';
+import { GLTFLoader } from './GLTFLoader.js';
+
+const app = document.getElementById('app');
+const loadingEl = document.getElementById('loading');
+const navTargetEl = document.getElementById('nav-target');
+const nicoBubbleEl = document.getElementById('nico-bubble');
+const nicoBubblePlaceEl = document.getElementById('nico-bubble-place');
+const nicoBubbleDateEl = document.getElementById('nico-bubble-date');
+
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+app.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 0.1, 100);
+camera.position.set(0, 0.6, 9.5);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false;
+controls.enableZoom = true;
+controls.minDistance = 3.5;
+controls.maxDistance = 11;
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+const GLOBE_SPIN_RATE = 0.0016;
+let globeSpinPaused = false;
+
+scene.add(new THREE.HemisphereLight(0xbfd9ff, 0x1a2440, 1.0));
+const key = new THREE.DirectionalLight(0xffffff, 1.4);
+key.position.set(4, 5, 6);
+scene.add(key);
+const fill = new THREE.DirectionalLight(0xffffff, 0.4);
+fill.position.set(-5, -2, -3);
+scene.add(fill);
+
+// ---------- night sky: starfield, sparkly 3D stars, moon ----------
+function makeCircleSprite() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.4, 'rgba(255,255,255,0.8)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,64,64);
+  return new THREE.CanvasTexture(c);
+}
+
+const starfieldGeo = new THREE.BufferGeometry();
+const STAR_COUNT = 3200;
+const starPositions = new Float32Array(STAR_COUNT * 3);
+for (let i = 0; i < STAR_COUNT; i++) {
+  const r = THREE.MathUtils.randFloat(14, 30);
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(THREE.MathUtils.randFloatSpread(2));
+  starPositions[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+  starPositions[i*3+1] = r * Math.cos(phi);
+  starPositions[i*3+2] = r * Math.sin(phi) * Math.sin(theta);
+}
+starfieldGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+const starfieldMat = new THREE.PointsMaterial({
+  size: 0.17, map: makeCircleSprite(), transparent: true, depthWrite: false,
+  color: 0xffffff, sizeAttenuation: true,
+});
+const starfield = new THREE.Points(starfieldGeo, starfieldMat);
+scene.add(starfield);
+
+// a handful of chunky low-poly 3D sparkle stars, scattered at medium distance
+function makeStarShape(outerR, innerR, points) {
+  const shape = new THREE.Shape();
+  const step = Math.PI / points;
+  for (let i = 0; i < points * 2; i++) {
+    const r = (i % 2 === 0) ? outerR : innerR;
+    const a = i * step - Math.PI/2;
+    const x = Math.cos(a) * r, y = Math.sin(a) * r;
+    if (i === 0) shape.moveTo(x, y); else shape.lineTo(x, y);
+  }
+  shape.closePath();
+  return shape;
+}
+const starGeo3D = new THREE.ExtrudeGeometry(makeStarShape(0.16, 0.065, 4), {
+  depth: 0.04, bevelEnabled: true, bevelThickness: 0.015, bevelSize: 0.015, bevelSegments: 1,
+});
+starGeo3D.center();
+const starMat3D = new THREE.MeshStandardMaterial({ color: 0xffe28a, flatShading: true, roughness: 0.6, emissive: 0x88651a, emissiveIntensity: 0.3 });
+
+const sparkleStars = [];
+const STAR3D_COUNT = 18;
+for (let i = 0; i < STAR3D_COUNT; i++) {
+  const star = new THREE.Mesh(starGeo3D, starMat3D);
+  const r = THREE.MathUtils.randFloat(4.2, 6.5);
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(THREE.MathUtils.randFloatSpread(2)) * 0.6 + Math.PI*0.2;
+  star.position.set(r*Math.sin(phi)*Math.cos(theta), r*Math.cos(phi)*1.4, r*Math.sin(phi)*Math.sin(theta));
+  const s = THREE.MathUtils.randFloat(0.6, 1.3);
+  star.scale.set(s, s, s);
+  star.rotation.z = Math.random() * Math.PI;
+  star.userData.spin = THREE.MathUtils.randFloat(0.002, 0.006) * (Math.random() < 0.5 ? -1 : 1);
+  scene.add(star);
+  sparkleStars.push(star);
+}
+
+// a low-poly cartoon moon, flat-shaded with a scattering of flush crater discs
+const moonGroup = new THREE.Group();
+const MOON_RADIUS = 0.85;
+const moonBodyMat = new THREE.MeshStandardMaterial({ color: 0xd9d9de, flatShading: true, roughness: 0.9 });
+const moonBody = new THREE.Mesh(new THREE.IcosahedronGeometry(MOON_RADIUS, 1), moonBodyMat);
+moonGroup.add(moonBody);
+
+const craterMat = new THREE.MeshStandardMaterial({ color: 0xb0b0b8, flatShading: true, roughness: 1.0 });
+const CRATER_COUNT = 9;
+for (let i = 0; i < CRATER_COUNT; i++) {
+  const dir = new THREE.Vector3(
+    THREE.MathUtils.randFloatSpread(2),
+    THREE.MathUtils.randFloatSpread(2),
+    THREE.MathUtils.randFloatSpread(2)
+  ).normalize();
+  const craterR = THREE.MathUtils.randFloat(0.08, 0.2);
+  const crater = new THREE.Mesh(new THREE.CircleGeometry(craterR, 8), craterMat);
+  crater.position.copy(dir.clone().multiplyScalar(MOON_RADIUS + 0.005));
+  crater.lookAt(dir.clone().multiplyScalar(MOON_RADIUS + 2));
+  moonGroup.add(crater);
+}
+moonGroup.position.set(-5.5, 3.2, -6);
+moonGroup.rotation.z = 0.3;
+scene.add(moonGroup);
+
+function updateNightSky(t) {
+  for (const star of sparkleStars) star.rotation.z += star.userData.spin;
+  moonGroup.rotation.y += 0.0009;
+}
+
+// page each continent's sign links to (placeholder for the eventual site)
+const PAGE_MAP = {
+  'North America': 'Projects',
+  'South America': 'Publications',
+  'Europe': 'Education',
+  'Africa': 'Experience',
+  'Asia': 'About',
+  'Oceania': 'Contact',
+};
+
+let globeRoot = null;
+let cloudsRoot = null;
+const buttonGroups = {}; // continent name -> { group, plaque, baseScale }
+let hoveredContinent = null;
+
+// edit this whenever Nico's location changes -- drives both where his figurine
+// stands on the globe and what his speech bubble says
+const LAST_SEEN = { city: 'Almaty', country: 'Kazakhstan', lon: 76.9, lat: 43.25 };
+const GLOBE_SURFACE_RADIUS = 2.1;
+const OCEAN_SURFACE_RADIUS = 1.9; // ocean sits lower than land after the displace/decimate pass -- boats use this instead
+const NICO_SCALE = 0.24;
+const NICO_LOCAL_HEAD_HEIGHT = 1.75; // approx local "up" distance from feet to just above his head/bubble anchor
+
+function lonLatToWorld(lon, lat, radius) {
+  const phi = THREE.MathUtils.degToRad(90 - lat);
+  const theta = THREE.MathUtils.degToRad(-lon + 180);
+  return new THREE.Vector3(
+    radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.sin(theta)
+  );
+}
+
+let nicoWavePivot = null;
+
+// ---------- boats (circling in an ocean, riding on the globe's surface) & planes (orbiting freely, with contrails) ----------
+const SHOW_BOATS = false; // boats didn't read well on the surface -- hidden for now, revisit later
+const BOATS = [
+  { file: './ship-ocean-liner.glb', centerLon: -35, centerLat: 15, radiusLon: 6, radiusLat: 4, speed: 0.045, phase: 0, scale: 0.045 },
+  { file: './boat-sail-a.glb', centerLon: -140, centerLat: 0, radiusLon: 7, radiusLat: 5, speed: 0.07, phase: 2.3, scale: 0.05 },
+];
+const boatInstances = [];
+
+const PLANES = [
+  { file: './Airplane.glb', radius: 2.55, speed: 0.34, phase: 0, tiltX: 0.3, tiltZ: 0.15, scale: 0.16 },
+  { file: './Airplane.glb', radius: 2.75, speed: -0.26, phase: 2.6, tiltX: -0.55, tiltZ: 0.65, scale: 0.16 },
+];
+const planeInstances = [];
+const TRAIL_LENGTH = 22;
+
+function makeContrailTrail() {
+  const sprites = [];
+  for (let i = 0; i < TRAIL_LENGTH; i++) {
+    const mat = new THREE.SpriteMaterial({ map: makeCircleSprite(), color: 0xffffff, transparent: true, opacity: 0, depthWrite: false });
+    const spr = new THREE.Sprite(mat);
+    spr.scale.set(0.4, 0.4, 1);
+    scene.add(spr);
+    sprites.push(spr);
+  }
+  return sprites;
+}
+
+function loadBoatsAndPlanes() {
+  if (SHOW_BOATS) for (const cfg of BOATS) {
+    loader.load(cfg.file, (gltf) => {
+      const boat = gltf.scene;
+      boat.scale.setScalar(cfg.scale);
+      globeRoot.add(boat);
+      boatInstances.push({ obj: boat, cfg });
+    });
+  }
+  for (const cfg of PLANES) {
+    loader.load(cfg.file, (gltf) => {
+      const plane = gltf.scene;
+      plane.scale.setScalar(cfg.scale);
+      scene.add(plane);
+      planeInstances.push({ obj: plane, cfg, trail: makeContrailTrail(), history: [] });
+    });
+  }
+}
+
+function updateBoats(t) {
+  for (const { obj, cfg } of boatInstances) {
+    const angle = t * cfg.speed + cfg.phase;
+    const lon = cfg.centerLon + cfg.radiusLon * Math.cos(angle);
+    const lat = cfg.centerLat + cfg.radiusLat * Math.sin(angle);
+    const pos = lonLatToWorld(lon, lat, OCEAN_SURFACE_RADIUS);
+
+    const nextAngle = angle + 0.02 * Math.sign(cfg.speed || 1);
+    const nLon = cfg.centerLon + cfg.radiusLon * Math.cos(nextAngle);
+    const nLat = cfg.centerLat + cfg.radiusLat * Math.sin(nextAngle);
+    const nextPos = lonLatToWorld(nLon, nLat, OCEAN_SURFACE_RADIUS);
+
+    obj.position.copy(pos);
+    obj.up.copy(pos.clone().normalize());
+    obj.lookAt(nextPos);
+  }
+}
+
+function updatePlanes(t) {
+  const axisX = new THREE.Vector3(1, 0, 0);
+  const axisZ = new THREE.Vector3(0, 0, 1);
+  for (const inst of planeInstances) {
+    const { obj, cfg, trail, history } = inst;
+    const angle = t * cfg.speed + cfg.phase;
+    const pos = new THREE.Vector3(Math.cos(angle) * cfg.radius, 0, Math.sin(angle) * cfg.radius)
+      .applyAxisAngle(axisX, cfg.tiltX).applyAxisAngle(axisZ, cfg.tiltZ);
+
+    const nextAngle = angle + 0.012 * Math.sign(cfg.speed || 1);
+    const nextPos = new THREE.Vector3(Math.cos(nextAngle) * cfg.radius, 0, Math.sin(nextAngle) * cfg.radius)
+      .applyAxisAngle(axisX, cfg.tiltX).applyAxisAngle(axisZ, cfg.tiltZ);
+
+    obj.position.copy(pos);
+    obj.up.copy(pos.clone().normalize());
+    obj.lookAt(nextPos);
+    obj.rotateY(-Math.PI / 2); // this plane model's nose points along local +X, not -Z
+
+    history.unshift(pos.clone());
+    if (history.length > trail.length) history.pop();
+    for (let i = 0; i < trail.length; i++) {
+      const s = trail[i];
+      if (i < history.length) {
+        s.position.copy(history[i]);
+        s.material.opacity = 0.45 * (1 - i / trail.length);
+      } else {
+        s.material.opacity = 0;
+      }
+    }
+  }
+}
+
+const loader = new GLTFLoader();
+loader.load('./globe_export.glb', (gltf) => {
+  const root = gltf.scene;
+  scene.add(root);
+
+  root.traverse((obj) => {
+    if (obj.name === 'GlobeRoot') globeRoot = obj;
+    if (obj.name === 'CloudsOrbitRoot') cloudsRoot = obj;
+    const m = obj.name.match(/^ButtonGroup_(.+)$/);
+    if (m) {
+      buttonGroups[m[1]] = { group: obj, baseScale: obj.scale.clone(), targetScale: 1 };
+    }
+  });
+
+  // find the plaque mesh within each group for raycasting
+  for (const continent in buttonGroups) {
+    const entry = buttonGroups[continent];
+    entry.plaque = entry.group.children.find(c => c.name.startsWith('Button_'));
+  }
+
+  loadingEl.style.display = 'none';
+  animate();
+  loadBoatsAndPlanes();
+  window.__debug = Object.assign(window.__debug || {}, { controls, buttonGroups, camera, renderer, scene, globeRoot, cloudsRoot, sparkleStars, moonGroup, boatInstances, planeInstances });
+});
+
+let nicoScene = null;
+let nicoAttached = false;
+
+loader.load('./nico_export.glb', (gltf) => {
+  const nico = gltf.scene;
+  nico.name = 'NicoScene';
+
+  nico.traverse((obj) => {
+    if (obj.name === 'Nico_Arm_Wave_Pivot') nicoWavePivot = obj;
+  });
+
+  const worldPos = lonLatToWorld(LAST_SEEN.lon, LAST_SEEN.lat, GLOBE_SURFACE_RADIUS);
+  const outward = worldPos.clone().normalize();
+  const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), outward);
+
+  nico.position.copy(worldPos);
+  nico.quaternion.copy(quat);
+  nico.scale.setScalar(NICO_SCALE);
+  scene.add(nico);
+  nicoScene = nico;
+
+  // the "last seen" bubble is a DOM overlay (see updateNicoBubble), not baked into the model --
+  // it needs to be much bigger than the figurine and should only show up when he's on-screen
+  nicoBubblePlaceEl.textContent = `${LAST_SEEN.city}, ${LAST_SEEN.country}`;
+  nicoBubbleDateEl.textContent = 'on ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  window.__debug = Object.assign(window.__debug || {}, { nicoScene, nicoWavePivot });
+});
+
+// ---------- hover detection ----------
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2(2, 2);
+
+renderer.domElement.addEventListener('pointermove', (e) => {
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+});
+
+renderer.domElement.addEventListener('click', () => {
+  if (hoveredContinent) {
+    alert(`Would navigate to: ${PAGE_MAP[hoveredContinent] || hoveredContinent}`);
+  }
+});
+
+function updateHover() {
+  if (!Object.keys(buttonGroups).length) return;
+  raycaster.setFromCamera(pointer, camera);
+  const plaques = Object.values(buttonGroups).map(e => e.plaque).filter(Boolean);
+  const hits = raycaster.intersectObjects(plaques, false);
+
+  let newHovered = null;
+  if (hits.length) {
+    const hitObj = hits[0].object;
+    for (const continent in buttonGroups) {
+      if (buttonGroups[continent].plaque === hitObj) { newHovered = continent; break; }
+    }
+  }
+
+  if (newHovered !== hoveredContinent) {
+    if (hoveredContinent) buttonGroups[hoveredContinent].targetScale = 1;
+    hoveredContinent = newHovered;
+    if (hoveredContinent) buttonGroups[hoveredContinent].targetScale = 1.35;
+
+    renderer.domElement.style.cursor = hoveredContinent ? 'pointer' : 'grab';
+    globeSpinPaused = !!hoveredContinent;
+
+    if (hoveredContinent) {
+      navTargetEl.textContent = PAGE_MAP[hoveredContinent] || hoveredContinent;
+      navTargetEl.classList.add('visible');
+    } else {
+      navTargetEl.classList.remove('visible');
+    }
+  }
+}
+
+function updateButtonScales() {
+  for (const continent in buttonGroups) {
+    const entry = buttonGroups[continent];
+    const current = entry.group.scale.x / entry.baseScale.x;
+    const next = THREE.MathUtils.lerp(current, entry.targetScale, 0.18);
+    entry.group.scale.copy(entry.baseScale).multiplyScalar(next);
+  }
+}
+
+// ---------- Nico's speech bubble (DOM overlay, tracks his screen position) ----------
+const nicoHeadWorld = new THREE.Vector3();
+const nicoPosWorld = new THREE.Vector3();
+function updateNicoBubble() {
+  if (!nicoScene) { nicoBubbleEl.style.display = 'none'; return; }
+
+  scene.updateMatrixWorld();
+  nicoScene.getWorldPosition(nicoPosWorld);
+  nicoScene.localToWorld(nicoHeadWorld.set(0, NICO_LOCAL_HEAD_HEIGHT, 0));
+
+  const outward = nicoPosWorld.clone().normalize();
+  const towardCamera = camera.position.clone().sub(nicoPosWorld).normalize();
+  const facingCamera = outward.dot(towardCamera) > 0.15;
+
+  const ndc = nicoHeadWorld.clone().project(camera);
+  const inFront = ndc.z < 1;
+
+  if (facingCamera && inFront) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    nicoBubbleEl.style.left = ((ndc.x * 0.5 + 0.5) * rect.width) + 'px';
+    nicoBubbleEl.style.top = ((1 - (ndc.y * 0.5 + 0.5)) * rect.height) + 'px';
+    nicoBubbleEl.style.display = 'block';
+  } else {
+    nicoBubbleEl.style.display = 'none';
+  }
+}
+
+// ---------- animate ----------
+const clock = new THREE.Clock();
+const SPIN_AXIS = new THREE.Vector3(0, 1, 0); // world "up" / pole axis for this globe (verified: Y in the exported scene)
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsed = clock.getElapsedTime();
+  updateHover();
+  updateButtonScales();
+  if (!globeSpinPaused && globeRoot) globeRoot.rotateOnWorldAxis(SPIN_AXIS, GLOBE_SPIN_RATE);
+  // clouds drift counter to the globe's own spin
+  if (cloudsRoot) cloudsRoot.rotateOnWorldAxis(SPIN_AXIS, -GLOBE_SPIN_RATE * 0.6);
+  // Nico rides on the globe's surface once both have loaded, so glue him on the
+  // first frame he's available rather than racing the two async loads
+  if (nicoScene && globeRoot && !nicoAttached) {
+    globeRoot.attach(nicoScene);
+    nicoAttached = true;
+  }
+  if (nicoWavePivot) nicoWavePivot.rotation.z = Math.sin(elapsed * 3.2) * 0.45;
+  updateNicoBubble();
+  updateBoats(elapsed);
+  updatePlanes(elapsed);
+  updateNightSky(elapsed);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
