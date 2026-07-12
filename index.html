@@ -356,7 +356,7 @@ loader.load('./globe_export.glb', (gltf) => {
     if (obj.name === 'CloudsOrbitRoot') cloudsRoot = obj;
     const m = obj.name.match(/^ButtonGroup_(.+)$/);
     if (m) {
-      buttonGroups[m[1]] = { group: obj, baseScale: obj.scale.clone(), targetScale: 1 };
+      buttonGroups[m[1]] = { group: obj, baseScale: obj.scale.clone(), bouncePhase: Math.random() * Math.PI * 2 };
     }
   });
 
@@ -432,9 +432,7 @@ function updateHover() {
   }
 
   if (newHovered !== hoveredContinent) {
-    if (hoveredContinent) buttonGroups[hoveredContinent].targetScale = 1;
     hoveredContinent = newHovered;
-    if (hoveredContinent) buttonGroups[hoveredContinent].targetScale = 1.35;
 
     renderer.domElement.style.cursor = hoveredContinent ? 'pointer' : 'grab';
     globeSpinPaused = !!hoveredContinent;
@@ -448,11 +446,18 @@ function updateHover() {
   }
 }
 
-function updateButtonScales() {
+const BUTTON_BOUNCE_SPEED = 1.8;
+const BUTTON_BOUNCE_AMOUNT = 0.07; // idle buttons breathe between ~0.93x and ~1.07x
+const BUTTON_HOVER_SCALE = 1.35;   // well above the idle bounce peak
+
+function updateButtonScales(elapsed) {
   for (const continent in buttonGroups) {
     const entry = buttonGroups[continent];
+    const target = continent === hoveredContinent
+      ? BUTTON_HOVER_SCALE
+      : 1 + Math.sin(elapsed * BUTTON_BOUNCE_SPEED + entry.bouncePhase) * BUTTON_BOUNCE_AMOUNT;
     const current = entry.group.scale.x / entry.baseScale.x;
-    const next = THREE.MathUtils.lerp(current, entry.targetScale, 0.18);
+    const next = THREE.MathUtils.lerp(current, target, 0.18);
     entry.group.scale.copy(entry.baseScale).multiplyScalar(next);
   }
 }
@@ -491,7 +496,7 @@ function animate() {
   requestAnimationFrame(animate);
   const elapsed = clock.getElapsedTime();
   updateHover();
-  updateButtonScales();
+  updateButtonScales(elapsed);
   if (!globeSpinPaused && globeRoot) globeRoot.rotateOnWorldAxis(SPIN_AXIS, GLOBE_SPIN_RATE);
   // clouds drift counter to the globe's own spin
   if (cloudsRoot) cloudsRoot.rotateOnWorldAxis(SPIN_AXIS, -GLOBE_SPIN_RATE * 0.6);
