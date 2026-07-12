@@ -1,7 +1,2 @@
-{
-  "lat": 43.25,
-  "lon": 76.9,
-  "city": "Almaty",
-  "country": "Kazakhstan",
-  "updatedAt": "2026-07-12T00:00:00Z"
-}
+{"lat": [Latitude], "lon": [Longitude], "city": "[City]", "country":
+"[Region]", "updatedAt": "[Formatted Date]"}
