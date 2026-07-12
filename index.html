@@ -226,6 +226,7 @@ const PAGE_MAP = {
 };
 
 let globeRoot = null;
+let globeRootBaseQuatInverse = null;
 let cloudsRoot = null;
 const buttonGroups = {}; // continent name -> { group, plaque, baseScale }
 let hoveredContinent = null;
@@ -356,7 +357,14 @@ loader.load('./globe_export.glb', (gltf) => {
   scene.add(root);
 
   root.traverse((obj) => {
-    if (obj.name === 'GlobeRoot') globeRoot = obj;
+    if (obj.name === 'GlobeRoot') {
+      globeRoot = obj;
+      // GlobeRoot carries a baked rotation from the original Blender export (poles aren't aligned
+      // to its own local Y). lonLatToWorld() gives coordinates in this *baseline* orientation, so we
+      // need its inverse to convert those into correct local space once something is parented under
+      // GlobeRoot and it has since spun -- see applyLocationToNico().
+      globeRootBaseQuatInverse = globeRoot.quaternion.clone().invert();
+    }
     if (obj.name === 'CloudsOrbitRoot') cloudsRoot = obj;
     const m = obj.name.match(/^ButtonGroup_(.+)$/);
     if (m) {
@@ -387,8 +395,16 @@ function applyLocationToNico(loc) {
   const worldPos = lonLatToWorld(loc.lon, loc.lat, GLOBE_SURFACE_RADIUS);
   const outward = worldPos.clone().normalize();
   const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), outward);
-  nicoScene.position.copy(worldPos);
-  nicoScene.quaternion.copy(quat);
+
+  if (nicoAttached && globeRootBaseQuatInverse) {
+    // nicoScene.position/quaternion are now in GlobeRoot's *local* space, but lonLatToWorld() and
+    // the quaternion above are expressed in GlobeRoot's baseline (pre-spin) orientation -- convert.
+    nicoScene.position.copy(worldPos.clone().applyQuaternion(globeRootBaseQuatInverse));
+    nicoScene.quaternion.copy(globeRootBaseQuatInverse.clone().multiply(quat));
+  } else {
+    nicoScene.position.copy(worldPos);
+    nicoScene.quaternion.copy(quat);
+  }
 
   nicoBubblePlaceEl.textContent = `${loc.city}, ${loc.country}`;
   const dateSrc = loc.updatedAt ? new Date(loc.updatedAt) : new Date();
@@ -424,7 +440,7 @@ loader.load('./nico_export.glb', (gltf) => {
   nicoScene = nico;
   applyLocationToNico(pendingLocation || DEFAULT_LOCATION);
 
-  window.__debug = Object.assign(window.__debug || {}, { nicoScene, nicoWavePivot });
+  window.__debug = Object.assign(window.__debug || {}, { nicoScene, nicoWavePivot, applyLocationToNico, fetchLiveLocation });
 });
 
 // ---------- hover detection ----------
