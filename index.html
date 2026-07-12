@@ -392,7 +392,9 @@ function applyLocationToNico(loc) {
 
   nicoBubblePlaceEl.textContent = `${loc.city}, ${loc.country}`;
   const dateSrc = loc.updatedAt ? new Date(loc.updatedAt) : new Date();
-  nicoBubbleDateEl.textContent = 'on ' + dateSrc.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const dateStr = dateSrc.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const timeStr = dateSrc.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  nicoBubbleDateEl.textContent = `on ${dateStr} at ${timeStr}`;
 }
 
 async function fetchLiveLocation() {
