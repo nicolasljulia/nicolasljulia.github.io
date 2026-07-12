@@ -230,9 +230,13 @@ let cloudsRoot = null;
 const buttonGroups = {}; // continent name -> { group, plaque, baseScale }
 let hoveredContinent = null;
 
-// edit this whenever Nico's location changes -- drives both where his figurine
-// stands on the globe and what his speech bubble says
-const LAST_SEEN = { city: 'Almaty', country: 'Kazakhstan', lon: 76.9, lat: 43.25 };
+// fallback shown until the live location.json loads (or if it ever fails to load)
+const DEFAULT_LOCATION = { city: 'Almaty', country: 'Kazakhstan', lon: 76.9, lat: 43.25, updatedAt: null };
+// this file is updated directly by a phone automation via the GitHub API (see project notes) --
+// raw.githubusercontent.com updates instantly on commit, no Pages rebuild needed
+const LOCATION_URL = 'https://raw.githubusercontent.com/nicolasljulia/nicolasljulia.github.io/main/location.json';
+const LOCATION_POLL_MS = 5 * 60 * 1000;
+let pendingLocation = null;
 const GLOBE_SURFACE_RADIUS = 2.1;
 const OCEAN_SURFACE_RADIUS = 1.9; // ocean sits lower than land after the displace/decimate pass -- boats use this instead
 const NICO_SCALE = 0.24;
@@ -375,6 +379,36 @@ loader.load('./globe_export.glb', (gltf) => {
 let nicoScene = null;
 let nicoAttached = false;
 
+// applies a { lat, lon, city, country, updatedAt } location to Nico's position/orientation and
+// his speech bubble. Safe to call before or after he's loaded, and safe to call again later
+// (e.g. on each periodic re-fetch) once he's already spinning with the globe.
+function applyLocationToNico(loc) {
+  if (!nicoScene) { pendingLocation = loc; return; }
+  const worldPos = lonLatToWorld(loc.lon, loc.lat, GLOBE_SURFACE_RADIUS);
+  const outward = worldPos.clone().normalize();
+  const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), outward);
+  nicoScene.position.copy(worldPos);
+  nicoScene.quaternion.copy(quat);
+
+  nicoBubblePlaceEl.textContent = `${loc.city}, ${loc.country}`;
+  const dateSrc = loc.updatedAt ? new Date(loc.updatedAt) : new Date();
+  nicoBubbleDateEl.textContent = 'on ' + dateSrc.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+async function fetchLiveLocation() {
+  try {
+    const res = await fetch(LOCATION_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('bad status ' + res.status);
+    const data = await res.json();
+    if (typeof data.lat === 'number' && typeof data.lon === 'number') applyLocationToNico(data);
+  } catch (e) {
+    console.warn('Could not fetch live location, using default', e);
+  }
+}
+applyLocationToNico(DEFAULT_LOCATION);
+fetchLiveLocation();
+setInterval(fetchLiveLocation, LOCATION_POLL_MS);
+
 loader.load('./nico_export.glb', (gltf) => {
   const nico = gltf.scene;
   nico.name = 'NicoScene';
@@ -383,20 +417,10 @@ loader.load('./nico_export.glb', (gltf) => {
     if (obj.name === 'Nico_Arm_Wave_Pivot') nicoWavePivot = obj;
   });
 
-  const worldPos = lonLatToWorld(LAST_SEEN.lon, LAST_SEEN.lat, GLOBE_SURFACE_RADIUS);
-  const outward = worldPos.clone().normalize();
-  const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), outward);
-
-  nico.position.copy(worldPos);
-  nico.quaternion.copy(quat);
   nico.scale.setScalar(NICO_SCALE);
   scene.add(nico);
   nicoScene = nico;
-
-  // the "last seen" bubble is a DOM overlay (see updateNicoBubble), not baked into the model --
-  // it needs to be much bigger than the figurine and should only show up when he's on-screen
-  nicoBubblePlaceEl.textContent = `${LAST_SEEN.city}, ${LAST_SEEN.country}`;
-  nicoBubbleDateEl.textContent = 'on ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  applyLocationToNico(pendingLocation || DEFAULT_LOCATION);
 
   window.__debug = Object.assign(window.__debug || {}, { nicoScene, nicoWavePivot });
 });
