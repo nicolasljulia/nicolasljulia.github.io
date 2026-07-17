@@ -257,7 +257,7 @@ let nicoWavePivot = null;
 const SHOW_BUTTONS = false; // continent buttons don't lead anywhere yet -- hidden for now
 
 // ---------- boats (circling in an ocean, riding on the globe's surface) & planes (orbiting freely, with contrails) ----------
-const SHOW_BOATS = false; // boats didn't read well on the surface -- hidden for now, revisit later
+const SHOW_BOATS = true;
 const BOATS = [
   { file: './ship-ocean-liner.glb', centerLon: -35, centerLat: 15, radiusLon: 6, radiusLat: 4, speed: 0.045, phase: 0, scale: 0.045 },
   { file: './boat-sail-a.glb', centerLon: -140, centerLat: 0, radiusLon: 7, radiusLat: 5, speed: 0.07, phase: 2.3, scale: 0.05 },
@@ -307,12 +307,19 @@ function updateBoats(t) {
     const angle = t * cfg.speed + cfg.phase;
     const lon = cfg.centerLon + cfg.radiusLon * Math.cos(angle);
     const lat = cfg.centerLat + cfg.radiusLat * Math.sin(angle);
-    const pos = lonLatToWorld(lon, lat, OCEAN_SURFACE_RADIUS);
+    const rawPos = lonLatToWorld(lon, lat, OCEAN_SURFACE_RADIUS);
 
     const nextAngle = angle + 0.02 * Math.sign(cfg.speed || 1);
     const nLon = cfg.centerLon + cfg.radiusLon * Math.cos(nextAngle);
     const nLat = cfg.centerLat + cfg.radiusLat * Math.sin(nextAngle);
-    const nextPos = lonLatToWorld(nLon, nLat, OCEAN_SURFACE_RADIUS);
+    const rawNextPos = lonLatToWorld(nLon, nLat, OCEAN_SURFACE_RADIUS);
+
+    // boats are parented under GlobeRoot, which carries a baked rotation from the Blender export --
+    // lonLatToWorld() is expressed in GlobeRoot's baseline (pre-spin) orientation, so convert into
+    // GlobeRoot's actual local space (same fix as applyLocationToNico) or the boat ends up on the
+    // wrong side of the globe with swapped axes.
+    const pos = globeRootBaseQuatInverse ? rawPos.clone().applyQuaternion(globeRootBaseQuatInverse) : rawPos;
+    const nextPos = globeRootBaseQuatInverse ? rawNextPos.clone().applyQuaternion(globeRootBaseQuatInverse) : rawNextPos;
 
     obj.position.copy(pos);
     obj.up.copy(pos.clone().normalize());
@@ -383,7 +390,7 @@ loader.load('./globe_export.glb', (gltf) => {
   loadingEl.style.display = 'none';
   animate();
   loadBoatsAndPlanes();
-  window.__debug = Object.assign(window.__debug || {}, { controls, buttonGroups, camera, renderer, scene, globeRoot, cloudsRoot, sparkleStars, moonGroup, boatInstances, planeInstances });
+  window.__debug = Object.assign(window.__debug || {}, { controls, buttonGroups, camera, renderer, scene, globeRoot, cloudsRoot, sparkleStars, moonGroup, boatInstances, planeInstances, updateBoats, globeRootBaseQuatInverse });
 });
 
 let nicoScene = null;
