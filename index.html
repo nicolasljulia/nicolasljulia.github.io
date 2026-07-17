@@ -555,20 +555,36 @@ function updateNicoBubble() {
 // ---------- animate ----------
 const clock = new THREE.Clock();
 const SPIN_AXIS = new THREE.Vector3(0, 1, 0); // world "up" / pole axis for this globe (verified: Y in the exported scene)
+let initialFaceDone = false;
+let globeSpinReady = false;
+
 function animate() {
   requestAnimationFrame(animate);
   const elapsed = clock.getElapsedTime();
   updateHover();
   updateButtonScales(elapsed);
-  if (!globeSpinPaused && globeRoot) globeRoot.rotateOnWorldAxis(SPIN_AXIS, GLOBE_SPIN_RATE);
-  // clouds drift counter to the globe's own spin
-  if (cloudsRoot) cloudsRoot.rotateOnWorldAxis(SPIN_AXIS, -GLOBE_SPIN_RATE * 0.6);
+
   // Nico rides on the globe's surface once both have loaded, so glue him on the
   // first frame he's available rather than racing the two async loads
   if (nicoScene && globeRoot && !nicoAttached) {
     globeRoot.attach(nicoScene);
     nicoAttached = true;
   }
+
+  // on first load, rotate the globe so Nico's current location faces the camera
+  // immediately, then give it half a second before the normal spin kicks in
+  if (nicoAttached && !initialFaceDone) {
+    const nicoWorldPos = nicoScene.getWorldPosition(new THREE.Vector3());
+    const currentAzimuth = Math.atan2(nicoWorldPos.x, nicoWorldPos.z);
+    globeRoot.rotateOnWorldAxis(SPIN_AXIS, -currentAzimuth);
+    initialFaceDone = true;
+    setTimeout(() => { globeSpinReady = true; }, 500);
+  }
+
+  if (globeSpinReady && !globeSpinPaused && globeRoot) globeRoot.rotateOnWorldAxis(SPIN_AXIS, GLOBE_SPIN_RATE);
+  // clouds drift counter to the globe's own spin
+  if (globeSpinReady && cloudsRoot) cloudsRoot.rotateOnWorldAxis(SPIN_AXIS, -GLOBE_SPIN_RATE * 0.6);
+
   if (nicoWavePivot) nicoWavePivot.rotation.z = Math.sin(elapsed * 3.2) * 0.45;
   updateNicoBubble();
   updateBoats(elapsed);
