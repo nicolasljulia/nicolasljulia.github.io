@@ -302,6 +302,8 @@ function loadBoatsAndPlanes() {
   }
 }
 
+const boatLookMatrix = new THREE.Matrix4();
+
 function updateBoats(t) {
   for (const { obj, cfg } of boatInstances) {
     const angle = t * cfg.speed + cfg.phase;
@@ -321,9 +323,17 @@ function updateBoats(t) {
     const pos = globeRootBaseQuatInverse ? rawPos.clone().applyQuaternion(globeRootBaseQuatInverse) : rawPos;
     const nextPos = globeRootBaseQuatInverse ? rawNextPos.clone().applyQuaternion(globeRootBaseQuatInverse) : rawNextPos;
 
+    // obj.lookAt() is NOT pure math when the object has a parent: internally it reads the object's
+    // *current* world position and the parent's *current* rotation to convert back to local space.
+    // Since GlobeRoot keeps spinning, that conflicts with pos/nextPos already being expressed in its
+    // baseline (pre-spin) orientation, causing the boat's "up" to drift out of alignment over time.
+    // Matrix4.lookAt() is pure math (no parent/world involvement), so build the local quaternion with
+    // that directly instead.
+    const upLocal = pos.clone().normalize();
     obj.position.copy(pos);
-    obj.up.copy(pos.clone().normalize());
-    obj.lookAt(nextPos);
+    obj.up.copy(upLocal);
+    boatLookMatrix.lookAt(nextPos, pos, upLocal);
+    obj.quaternion.setFromRotationMatrix(boatLookMatrix);
   }
 }
 
