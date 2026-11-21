@@ -112,7 +112,15 @@ nav.sections a {
 nav.sections a:hover { color: var(--ink); border-color: var(--card-border); }
 nav.sections a[aria-current="page"] { color: #0a1128; background: var(--gold); }
 
+.gallery { display: flex; gap: 16px; align-items: flex-start; margin: 28px 0 8px; }
+.gallery .col { flex: 1; min-width: 0; }
+.gallery figure { margin: 0 0 16px; }
+.gallery img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--card-border); background: var(--card); }
+.gallery figcaption { font-size: 14px; color: var(--ink-dim); margin-top: 8px; }
+
 @media (max-width: 560px) {
+  .gallery { flex-direction: column; align-items: stretch; gap: 0; }
+  .gallery .col { display: contents; }
   body { font-size: 16px; }
   .card { padding: 20px; }
 }
