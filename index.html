@@ -81,6 +81,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from './OrbitControls.js';
 import { GLTFLoader } from './GLTFLoader.js';
+import { FontLoader } from './FontLoader.js';
+import { TextGeometry } from './TextGeometry.js';
 
 const app = document.getElementById('app');
 const loadingEl = document.getElementById('loading');
@@ -215,11 +217,60 @@ function updateNightSky(t) {
   moonGroup.rotation.y += 0.0009;
 }
 
+
+// The baked 3D text on a sign can't be edited in the browser, so a sign whose page changed gets a
+// freshly extruded label built from the same font (Phosphate Solid) and sized like the others
+// (letters ~0.063 tall, ~0.028 deep, sitting on a plaque with ~0.031 of margin each side).
+const SIGN_LABEL_OVERRIDES = { South_America: 'LINKS' };
+const SIGN_LABEL_HEIGHT = 0.0626;
+const SIGN_LABEL_DEPTH = 0.028;
+const SIGN_PLAQUE_MARGIN = 0.031;
+const ASIA_PLAQUE_HALF_WIDTH = 0.161; // plaque the other short signs share; used as the unscaled reference
+
+async function relabelSigns() {
+  try {
+    const json = await (await fetch('./phosphate-solid.typeface.json')).json();
+    const font = new FontLoader().parse(json);
+    for (const [continent, text] of Object.entries(SIGN_LABEL_OVERRIDES)) {
+      const entry = buttonGroups[continent];
+      if (!entry) continue;
+      const label = entry.group.children.find(c => c.name.startsWith('Label_'));
+      if (!label || !entry.plaque) continue;
+
+      // measure at unit size to find the scale that gives the standard letter height
+      const probe = new TextGeometry(text, { font, size: 1, height: 0.1, curveSegments: 6, bevelEnabled: false });
+      probe.computeBoundingBox();
+      const unitHeight = probe.boundingBox.max.y - probe.boundingBox.min.y;
+      probe.dispose();
+      const size = SIGN_LABEL_HEIGHT / unitHeight;
+
+      const geo = new TextGeometry(text, {
+        font, size, height: SIGN_LABEL_DEPTH * 0.8, curveSegments: 6,
+        bevelEnabled: true, bevelThickness: SIGN_LABEL_DEPTH * 0.1, bevelSize: SIGN_LABEL_HEIGHT * 0.015, bevelSegments: 2,
+      });
+      geo.computeBoundingBox();
+      const c = geo.boundingBox.getCenter(new THREE.Vector3());
+      geo.translate(-c.x, -c.y, -c.z);
+      // text is drawn in XY facing +Z; the sign's frame has width on X, height on -Z and outward on +Y
+      geo.applyMatrix4(new THREE.Matrix4().makeBasis(
+        new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, -1), new THREE.Vector3(0, 1, 0)));
+      geo.computeBoundingBox();
+
+      label.geometry.dispose();
+      label.geometry = geo;
+      const halfWidth = (geo.boundingBox.max.x - geo.boundingBox.min.x) / 2 + SIGN_PLAQUE_MARGIN;
+      entry.plaque.scale.x = halfWidth / ASIA_PLAQUE_HALF_WIDTH;
+    }
+  } catch (e) {
+    console.warn('Could not relabel signs', e);
+  }
+}
+
 // which page each continent's sign opens. Keys use underscores because that's what the
 // glTF exporter turns the Blender node names ("North America") into.
 const PAGE_MAP = {
   North_America: { label: 'Projects',     url: 'projects.html' },
-  South_America: { label: 'Publications', url: 'publications.html' },
+  South_America: { label: 'Links',        url: 'links.html' },
   Europe:        { label: 'Education',    url: 'education.html' },
   Africa:        { label: 'Experience',   url: 'experience.html' },
   Asia:          { label: 'About',        url: 'about.html' },
@@ -398,6 +449,8 @@ loader.load('./globe_export.glb', (gltf) => {
     entry.plaque = entry.group.children.find(c => c.name.startsWith('Button_'));
     if (!SHOW_BUTTONS) entry.group.visible = false;
   }
+
+  relabelSigns();
 
   loadingEl.style.display = 'none';
   animate();
