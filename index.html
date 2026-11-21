@@ -67,7 +67,7 @@
     <div class="role">Geographer</div>
   </div>
   <div id="loading">Loading globe…</div>
-  <div id="hint">drag to spin &middot; hover a sign to see it pop</div>
+  <div id="hint">drag to spin &middot; click a sign to open it</div>
   <div id="nav-target"></div>
   <div id="nico-bubble">
     <div class="bubble-box">
@@ -215,14 +215,15 @@ function updateNightSky(t) {
   moonGroup.rotation.y += 0.0009;
 }
 
-// page each continent's sign links to (placeholder for the eventual site)
+// which page each continent's sign opens. Keys use underscores because that's what the
+// glTF exporter turns the Blender node names ("North America") into.
 const PAGE_MAP = {
-  'North America': 'Projects',
-  'South America': 'Publications',
-  'Europe': 'Education',
-  'Africa': 'Experience',
-  'Asia': 'About',
-  'Oceania': 'Contact',
+  North_America: { label: 'Projects',     url: 'projects.html' },
+  South_America: { label: 'Publications', url: 'publications.html' },
+  Europe:        { label: 'Education',    url: 'education.html' },
+  Africa:        { label: 'Experience',   url: 'experience.html' },
+  Asia:          { label: 'About',        url: 'about.html' },
+  Oceania:       { label: 'Contact',      url: 'contact.html' },
 };
 
 let globeRoot = null;
@@ -254,7 +255,7 @@ function lonLatToWorld(lon, lat, radius) {
 }
 
 let nicoWavePivot = null;
-const SHOW_BUTTONS = false; // continent buttons don't lead anywhere yet -- hidden for now
+const SHOW_BUTTONS = true;
 
 // ---------- boats (circling in an ocean, riding on the globe's surface) & planes (orbiting freely, with contrails) ----------
 const SHOW_BOATS = true;
@@ -433,6 +434,12 @@ function applyLocationToNico(loc) {
   nicoBubbleDateEl.textContent = `on ${dateStr} at ${timeStr}`;
 }
 
+// the opening shot waits for the first live fetch to settle (success or failure) so the globe
+// turns to where Nico really is, not to the fallback location -- see animate()
+let liveLocationSettled = false;
+const LIVE_LOCATION_MAX_WAIT_MS = 2000;
+const pageLoadedAt = performance.now();
+
 async function fetchLiveLocation() {
   try {
     const res = await fetch(LOCATION_URL + '?t=' + Date.now(), { cache: 'no-store' });
@@ -441,6 +448,8 @@ async function fetchLiveLocation() {
     if (typeof data.lat === 'number' && typeof data.lon === 'number') applyLocationToNico(data);
   } catch (e) {
     console.warn('Could not fetch live location, using default', e);
+  } finally {
+    liveLocationSettled = true;
   }
 }
 applyLocationToNico(DEFAULT_LOCATION);
@@ -467,31 +476,47 @@ loader.load('./nico_export.glb', (gltf) => {
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2(2, 2);
 
-renderer.domElement.addEventListener('pointermove', (e) => {
+function setPointerFromEvent(e) {
   const rect = renderer.domElement.getBoundingClientRect();
   pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
   pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-});
+}
 
-renderer.domElement.addEventListener('click', () => {
-  if (hoveredContinent) {
-    alert(`Would navigate to: ${PAGE_MAP[hoveredContinent] || hoveredContinent}`);
+// which continent's sign (if any) is under the current pointer position
+function pickContinent() {
+  raycaster.setFromCamera(pointer, camera);
+  const plaques = Object.values(buttonGroups).map(e => e.plaque).filter(Boolean);
+  const hits = raycaster.intersectObjects(plaques, false);
+  if (!hits.length) return null;
+  for (const continent in buttonGroups) {
+    if (buttonGroups[continent].plaque === hits[0].object) return continent;
   }
+  return null;
+}
+
+renderer.domElement.addEventListener('pointermove', setPointerFromEvent);
+
+// Treat a press-and-release with barely any movement as a click, so dragging the globe
+// to spin it never accidentally opens a page. Re-pick on press so taps work on touch
+// screens, where there's no hover to have set hoveredContinent beforehand.
+let pressStart = null;
+renderer.domElement.addEventListener('pointerdown', (e) => {
+  setPointerFromEvent(e);
+  pressStart = { x: e.clientX, y: e.clientY };
+});
+renderer.domElement.addEventListener('pointerup', (e) => {
+  if (!SHOW_BUTTONS || !pressStart) return;
+  const moved = Math.hypot(e.clientX - pressStart.x, e.clientY - pressStart.y);
+  pressStart = null;
+  if (moved > 6) return;
+  setPointerFromEvent(e);
+  const continent = pickContinent();
+  if (continent && PAGE_MAP[continent]) window.location.href = PAGE_MAP[continent].url;
 });
 
 function updateHover() {
   if (!SHOW_BUTTONS || !Object.keys(buttonGroups).length) return;
-  raycaster.setFromCamera(pointer, camera);
-  const plaques = Object.values(buttonGroups).map(e => e.plaque).filter(Boolean);
-  const hits = raycaster.intersectObjects(plaques, false);
-
-  let newHovered = null;
-  if (hits.length) {
-    const hitObj = hits[0].object;
-    for (const continent in buttonGroups) {
-      if (buttonGroups[continent].plaque === hitObj) { newHovered = continent; break; }
-    }
-  }
+  const newHovered = pickContinent();
 
   if (newHovered !== hoveredContinent) {
     hoveredContinent = newHovered;
@@ -500,7 +525,7 @@ function updateHover() {
     globeSpinPaused = !!hoveredContinent;
 
     if (hoveredContinent) {
-      navTargetEl.textContent = PAGE_MAP[hoveredContinent] || hoveredContinent;
+      navTargetEl.textContent = PAGE_MAP[hoveredContinent] ? PAGE_MAP[hoveredContinent].label : hoveredContinent;
       navTargetEl.classList.add('visible');
     } else {
       navTargetEl.classList.remove('visible');
@@ -573,7 +598,8 @@ function animate() {
 
   // on first load, rotate the globe so Nico's current location faces the camera
   // immediately, then give it half a second before the normal spin kicks in
-  if (nicoAttached && !initialFaceDone) {
+  const liveWaitOver = liveLocationSettled || (performance.now() - pageLoadedAt) > LIVE_LOCATION_MAX_WAIT_MS;
+  if (nicoAttached && liveWaitOver && !initialFaceDone) {
     const nicoWorldPos = nicoScene.getWorldPosition(new THREE.Vector3());
     const currentAzimuth = Math.atan2(nicoWorldPos.x, nicoWorldPos.z);
     globeRoot.rotateOnWorldAxis(SPIN_AXIS, -currentAzimuth);
