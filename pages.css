@@ -122,3 +122,36 @@ nav.sections a[aria-current="page"] { color: #0a1128; background: var(--gold); }
   body { font-size: 16px; }
   .card { padding: 20px; }
 }
+
+/* flights */
+.flights { margin: 32px 0 8px; }
+.flights h2 { margin-bottom: 14px; }
+.fl-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.fl-tabs button, .fl-ctl button {
+  font: inherit; font-size: 13px; color: var(--ink-dim); background: transparent; cursor: pointer;
+  padding: 6px 13px; border-radius: 999px; border: 1px solid var(--card-border);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.fl-tabs button:hover, .fl-ctl button:hover { color: var(--ink); border-color: var(--gold); }
+.fl-tabs button[aria-pressed="true"] { color: #0a1128; background: var(--gold); border-color: var(--gold); }
+.fl-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.fl-stat { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px 14px; }
+.fl-stat b { display: block; font: 400 30px/1.05 var(--display); letter-spacing: 0.03em; color: var(--gold); }
+.fl-stat span { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
+.fl-range { font-size: 13px; color: var(--ink-dim); margin: 8px 0 14px; min-height: 1.5em; }
+.fl-map { border: 1px solid var(--card-border); border-radius: 14px; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 40%, #12214a 0%, #0a1230 100%); }
+.fl-map canvas { display: block; width: 100%; cursor: pointer; }
+.fl-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+.fl-cap { font-size: 13px; color: var(--ink-dim); min-width: 0; }
+.fl-ctl { display: flex; gap: 6px; flex-shrink: 0; }
+.fl-places { margin-top: 10px; }
+.fl-places summary { cursor: pointer; font-size: 14px; color: var(--ink-dim); padding: 6px 0; }
+.fl-places summary:hover { color: var(--ink); }
+.fl-list p { margin: 0 0 8px; font-size: 14px; line-height: 1.4; }
+.fl-list strong { display: block; font-weight: 600; }
+.fl-list span { color: var(--ink-dim); }
+@media (max-width: 560px) {
+  .fl-stats { grid-template-columns: repeat(2, 1fr); }
+  .fl-bar { flex-direction: column; align-items: flex-start; }
+}
