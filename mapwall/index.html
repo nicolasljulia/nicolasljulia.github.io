@@ -516,13 +516,20 @@ details.howto summary:hover{opacity:1}
 details.howto summary:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 details.howto .dek{margin-top:8px!important}
 @media (prefers-reduced-motion:reduce){details.howto summary::before{transition:none}}
+
+/* one address per map: #slug on each section, a copy-link button, and scroll offset */
+.grid>.card{scroll-margin-top:12px}
+.maplink{font:inherit;font-size:13px;font-weight:600;background:transparent;color:inherit;border:0;padding:2px 0;cursor:pointer;opacity:.6;text-decoration:underline;text-underline-offset:3px}
+.maplink:hover{opacity:1}
+.maplink:focus-visible{outline:2px solid currentColor;outline-offset:3px;opacity:1}
+.grid>.card>.cap .maplink{margin:2px 0}
 </style>
 <div class="wrap">
 <header class="mast"><a class="mw-back" href="../projects.html">&larr; Projects</a><h1>The Map Wall</h1></header>
 
 <div class="grid">
-<article class="card bandcard"><section class="band" id="hormuz"><div class="in">
-  <div class="titlerow"><h2>Shipping through the Strait of Hormuz</h2><span class="where">Persian Gulf, Iran, Oman, UAE</span></div>
+<article class="card bandcard" id="hormuz-shipping"><section class="band" id="hormuz"><div class="in">
+  <div class="titlerow"><h2>Shipping through the Strait of Hormuz</h2><span class="where">Persian Gulf, Iran, Oman, UAE</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Drag the two bands under the chart to set a baseline period and a comparison period. Each port's outline shows its baseline traffic; the filled disc shows the comparison. Switch vessel type, and click any port to trace it.</p></details>
   <div class="ctl">
     <label class="k">Vessels</label>
@@ -539,8 +546,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Source: IMF PortWatch (UN Global Platform AIS), daily port calls for 46 ports with ≥ 30 calls since July 2025, and daily Strait of Hormuz transit calls. Ports east of 56.3°E and south of 26°N are counted as outside the strait. Coastline: Natural Earth 1:10m.</p>
 </div></section></article>
-<article class="card bandcard"><section class="band" id="gaza"><div class="in">
-  <div class="titlerow"><h2>Building damage in Gaza</h2><span class="where">Gaza Strip, Palestine</span></div>
+<article class="card bandcard" id="gaza-damage"><section class="band" id="gaza"><div class="in">
+  <div class="titlerow"><h2>Building damage in Gaza</h2><span class="where">Gaza Strip, Palestine</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Every dot is a structure UNOSAT found damaged by the selected assessment date. Step through the 14 dates, filter by damage class, and drag the black lens over any neighbourhood (resize it with the slider) to count what happened inside it over time.</p></details>
   <div class="ctl"><button class="btn" type="button" id="gz-play">▶ Play</button><div class="cls" id="gz-cls"></div>
     <label class="k" for="gz-r">Lens</label><input type="range" id="gz-r" min="200" max="3000" step="50" value="900" style="max-width:220px"><span class="num" id="gz-rv">900 m</span></div>
@@ -551,8 +558,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Source: UNOSAT Comprehensive Damage Assessment of the Gaza Strip, 11 October 2025 (structure points with class per assessment date), via HDX; governorates from geoBoundaries. Classes: destroyed, severely, moderately and possibly damaged. Damage seen from satellite imagery; ground conditions may differ.</p>
 </div></section></article>
-<article class="card satcard"><section class="band" id="kak"><div class="in">
-  <div class="titlerow"><h2>Kakhovka Reservoir after the dam breach</h2><span class="where">Kherson, Zaporizhzhia, Ukraine</span></div>
+<article class="card satcard" id="kakhovka-reservoir"><section class="band" id="kak"><div class="in">
+  <div class="titlerow"><h2>Kakhovka Reservoir after the dam breach</h2><span class="where">Kherson, Zaporizhzhia, Ukraine</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Two sliders. The horizontal one moves through time; the vertical one wipes between the satellite image (above the line) and a land-cover map computed from it (below). Click anywhere to see how that spot changed across all eleven dates.</p></details>
   <div class="g2" style="margin-top:14px">
     <div class="stage">
@@ -565,8 +572,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Imagery: Copernicus Sentinel-2 L2A via Earth Search (AWS), cloud-masked best-pixel mosaics per period. Land cover is classified on each mosaic: water (MNDWI &gt; 0 with low NIR), bare (NDVI &lt; 0.15), sparse vegetation (0.15–0.35) and dense vegetation (&gt; 0.35). The reservoir footprint is the water mapped in July 2022. The Kakhovka dam was destroyed on 6 June 2023.</p>
 </div></section></article>
-<article class="card bandcard"><section class="band" id="sudan"><div class="in">
-  <div class="titlerow"><h2>Food insecurity in Sudan</h2><span class="where">Sudan</span></div>
+<article class="card bandcard" id="sudan-food-insecurity"><section class="band" id="sudan"><div class="in">
+  <div class="titlerow"><h2>Food insecurity in Sudan</h2><span class="where">Sudan</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Two IPC periods sit on top of each other. Drag the black handle to wipe from one to the other, choose what the colours measure, and click localities (or pick a region) to add up how many people are in each phase in both periods.</p></details>
   <div class="ctl">
     <label class="k" for="sd-a">Left</label><select id="sd-a"></select>
@@ -581,8 +588,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Source: IPC Acute Food Insecurity analysis for Sudan via HDX (area-level populations by phase; current Feb–May 2026 and two projections). Area phase here is recomputed with the IPC 20% rule (the most severe phase holding at least 20% of the population); famine classification also needs mortality and nutrition evidence not shown.</p>
 </div></section></article>
-<article class="card satcard"><section class="band" id="sindh"><div class="in">
-  <div class="titlerow"><h2>Cropland flooded in 2022</h2><span class="where">Dadu, Kamber-Shahdadkot, Sindh, Pakistan</span></div>
+<article class="card satcard" id="sindh-floods"><section class="band" id="sindh"><div class="in">
+  <div class="titlerow"><h2>Cropland flooded in 2022</h2><span class="where">Dadu, Kamber-Shahdadkot, Sindh, Pakistan</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Drag the pink handle to compare the satellite image with the flood map. Step through the months as the water spreads and drains, and click a tehsil to see how much of its cropland was under water at each date.</p></details>
   <div class="ctl"><button class="btn" type="button" id="sn-play">▶ Play</button><span class="date num" id="sn-d"></span><input type="range" id="sn-t" min="0" max="8" value="3" aria-label="Date">
     <button class="btn" type="button" id="sn-bnd" aria-pressed="true">Tehsil lines</button></div>
@@ -595,8 +602,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Imagery: Sentinel-2 L2A mosaics (cloud-masked; monsoon dates have gaps where clouds persisted, counted as no data). Cropland: ESA WorldCover 2021 (10 m, cropland class). Flooded cropland = cropland pixels classified as water at the date that were not water in September 2021. Tehsil boundaries: geoBoundaries ADM3.</p>
 </div></section></article>
-<article class="card bandcard"><section class="band" id="cox"><div class="in">
-  <div class="titlerow"><h2>Walking access to services in refugee camps</h2><span class="where">Cox's Bazar, Bangladesh</span></div>
+<article class="card bandcard" id="coxs-bazar-camps"><section class="band" id="cox"><div class="in">
+  <div class="titlerow"><h2>Walking access to services in refugee camps</h2><span class="where">Cox's Bazar, Bangladesh</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Click anywhere inside the camps to drop a shelter pin, then set how far someone can walk. The panel lists what is in reach and how far the nearest of each service is. Scroll or pinch to zoom. Toggle the 2021 fire footprint and landslide-prone facilities.</p></details>
   <div class="ctl">
     <label class="k" for="cx-r">Walk radius</label><input type="range" id="cx-r" min="100" max="1500" step="50" value="400"><span class="num" id="cx-rv" style="min-width:6ch">400 m</span>
@@ -611,8 +618,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Source: ISCG / IOM Site Management, camp outlines (April 2023) and Common Facility Mapping v26.1; UNOSAT/REACH fire extent of 22 March 2021, via HDX. Distances are straight-line, not along paths; terrain in the camps is steep, so real walking distances are longer.</p>
 </div></section></article>
-<article class="card satcard"><section class="band" id="eaton"><div class="in">
-  <div class="titlerow"><h2>Eaton fire damage</h2><span class="where">Altadena, California, USA</span></div>
+<article class="card satcard" id="eaton-fire"><section class="band" id="eaton"><div class="in">
+  <div class="titlerow"><h2>Eaton fire damage</h2><span class="where">Altadena, California, USA</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">18,428 structures inspected on the ground, laid over Sentinel-2 imagery before, just after and in the months following the fire. Change the image date, fade in burn severity, and drag across the histogram to select a burn-severity range and see which buildings fall in it. Scroll to zoom, drag to pan.</p></details>
   <div class="ctl"><div class="chips" id="et-dates"></div></div>
   <div class="ctl"><label class="k" for="et-o">Burn severity</label><input type="range" id="et-o" min="0" max="1" step="0.05" value="0.55" style="max-width:220px"><div class="chips" id="et-cls"></div></div>
@@ -622,8 +629,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Structures: CAL FIRE Damage Inspection (DINS) 2025 Eaton, public view. Fire perimeter: Palisades and Eaton dissolved perimeters (21 January 2025). Burn severity: differenced Normalized Burn Ratio (dNBR, Sentinel-2 B8A/B12) against the 18 December 2024 image, with USGS class thresholds (0.1, 0.27, 0.44, 0.66).</p>
 </div></section></article>
-<article class="card bandcard"><section class="band" id="funafuti"><div class="in">
-  <div class="titlerow"><h2>Sea-level rise on an atoll</h2><span class="where">Funafuti, Tuvalu</span></div>
+<article class="card bandcard" id="funafuti-sea-level"><section class="band" id="funafuti"><div class="in">
+  <div class="titlerow"><h2>Sea-level rise on an atoll</h2><span class="where">Funafuti, Tuvalu</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Raise the sea and see which land floods. Switch between a bathtub fill and flooding that has to connect to the ocean or lagoon, add a king tide on top, and drag a line across any islet to draw its elevation profile.</p></details>
   <div class="ctl">
     <label class="k" for="fn-s">Sea level rise</label><input type="range" id="fn-s" min="0" max="3" step="0.05" value="0.56"><span class="lvl num" id="fn-sv">+0.56 m</span>
@@ -638,8 +645,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Source: Copernicus GLO-30 Digital Surface Model (heights above EGM2008 geoid; includes trees and buildings, so true ground is lower and flooding is understated). Scenarios: IPCC AR6 median global mean sea-level rise by 2100 vs. 1995–2014. King-tide height is an approximate addition, not a local tide model.</p>
 </div></section></article>
-<article class="card satcard"><section class="band" id="manaus"><div class="in">
-  <div class="titlerow"><h2>Rio Negro drought</h2><span class="where">Manaus, Amazonas, Brazil</span></div>
+<article class="card satcard" id="rio-negro-drought"><section class="band" id="manaus"><div class="in">
+  <div class="titlerow"><h2>Rio Negro drought</h2><span class="where">Manaus, Amazonas, Brazil</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Nine cloud-masked images of the Rio Negro and Solimões at Manaus, 2022–2026, from July high water to October low water. Move through time and pin a reference date to trace its shoreline in gold. Drag a line across the river to measure its wet width on every date.</p></details>
   <div class="ctl"><button class="btn" type="button" id="mn-play">▶ Play</button><span class="date num" id="mn-d"></span><input type="range" id="mn-t" min="0" max="8" value="5" aria-label="Date">
     <label class="k" for="mn-ref">shoreline of</label><select id="mn-ref"></select></div>
@@ -649,8 +656,8 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Imagery: Sentinel-2 L2A, 30 m, cloud-masked mosaics per month. Water: MNDWI &gt; 0 with low NIR (sediment-laden Solimões water included). Areas are of the mapped window only and count clear pixels; widths are measured along your line on each image.</p>
 </div></section></article>
-<article class="card satcard"><section class="band" id="amacro"><div class="in">
-  <div class="titlerow"><h2>Deforestation, 2008–2025</h2><span class="where">Rondônia, Amazonas, Acre, Brazil</span></div>
+<article class="card satcard" id="amacro-deforestation"><section class="band" id="amacro"><div class="in">
+  <div class="titlerow"><h2>Deforestation, 2008–2025</h2><span class="where">Rondônia, Amazonas, Acre, Brazil</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button></div>
   <details class="howto"><summary>How to use this map</summary><p class="dek">Every polygon of forest that Brazil's PRODES programme mapped as cleared, coloured by the year it fell. Drag the year, move the circular scanner to see the real Sentinel-2 image underneath, and brush the bar chart to isolate a range of years. Click a polygon for its record.</p></details>
   <div class="ctl"><button class="btn" type="button" id="ac-play">▶ RUN</button><span class="date num" id="ac-d">2025</span><input type="range" id="ac-t" min="2008" max="2025" value="2025" aria-label="Year">
     <label class="k" for="ac-r">scanner</label><input type="range" id="ac-r" min="60" max="500" value="220" style="max-width:180px"><button class="btn" type="button" id="ac-inv" aria-pressed="false">Invert scanner</button></div>
@@ -685,60 +692,60 @@ details.howto .dek{margin-top:8px!important}
 
 
 
-<article class="card wide s01"><header class="cap"><h2>Soy production density, 2004 and 2024</h2><span class="where">Brazil</span><span class="s">IBGE PAM, t/km² by municipality</span></header>
+<article class="card wide s01" id="brazil-soy"><header class="cap"><h2>Soy production density, 2004 and 2024</h2><span class="where">Brazil</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">IBGE PAM, t/km² by municipality</span></header>
   <div class="pair"><div><h3>2004</h3><svg id="br-a" class="main" viewBox="0 0 480 470"></svg></div><div><h3>2024</h3><svg id="br-b" class="main" viewBox="0 0 480 470"></svg></div></div>
   <div class="legend" id="lg-br"></div><aside id="ld-br" hidden></aside>
 </article>
-<article class="card  s02"><header class="cap"><h2>Arctic sea ice and shipping routes</h2><span class="where">Arctic Ocean</span><span class="s">NSIDC, September extent, 1979–2026</span></header>
+<article class="card  s02" id="arctic-sea-ice"><header class="cap"><h2>Arctic sea ice and shipping routes</h2><span class="where">Arctic Ocean</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">NSIDC, September extent, 1979–2026</span></header>
   <div class="controls"><button class="play" id="ice-play" type="button">▶ Play</button><span class="yr" id="ice-yr">2026</span><input type="range" id="ice-slider" min="1979" max="2026" value="2026" aria-label="Year"></div>
   <svg class="main" id="m-ice" viewBox="0 0 640 600"></svg><div class="legend" id="lg-ice"></div>
   <div class="chart"><svg id="c-ice" viewBox="0 0 640 120"></svg></div><aside id="ld-ice" hidden></aside>
 </article>
-<article class="card  s03"><header class="cap"><h2>Traffic at maritime chokepoints</h2><span class="where">World</span><span class="s">IMF PortWatch, ships/day vs. 2019–23</span></header>
+<article class="card  s03" id="maritime-chokepoints"><header class="cap"><h2>Traffic at maritime chokepoints</h2><span class="where">World</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">IMF PortWatch, ships/day vs. 2019–23</span></header>
   <div class="controls"><button class="play" id="cp-play" type="button">▶ Play</button><span class="yr" id="cp-mo" style="min-width:7ch">Nov 2026</span><input type="range" id="cp-slider" aria-label="Month"></div>
   <svg class="main" id="m-cp" viewBox="0 0 960 470"></svg><div class="legend" id="lg-cp"></div>
   <div class="chart"><h3 id="c-cp-t"></h3><svg id="c-cp" viewBox="0 0 640 150"></svg></div><aside id="ld-cp" hidden></aside>
 </article>
-<article class="card  s04"><header class="cap"><h2>Cereal yield vs. fertilizer use</h2><span class="where">World</span><span class="s">World Bank / FAO, 2021–23</span></header>
+<article class="card  s04" id="yield-vs-fertilizer"><header class="cap"><h2>Cereal yield vs. fertilizer use</h2><span class="where">World</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">World Bank / FAO, 2021–23</span></header>
   <div class="bivgrid"><svg class="main" id="m-biv" viewBox="0 0 960 470"></svg><div class="bivside"><svg id="sc-biv" viewBox="0 0 440 400" role="img" aria-label="Scatter of cereal yield against fertilizer use"></svg><div id="sc-note"></div></div></div><div class="legend" id="lg-biv"></div><aside id="ld-biv" hidden></aside>
 </article>
-<article class="card  s05"><header class="cap"><h2>Undersea internet cables</h2><span class="where">World</span><span class="s">TeleGeography, 1989–2030</span></header>
+<article class="card  s05" id="undersea-cables"><header class="cap"><h2>Undersea internet cables</h2><span class="where">World</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">TeleGeography, 1989–2030</span></header>
   <div class="controls"><button class="play" id="cab-play" type="button">▶ Play</button><span class="yr" id="cab-yr">2026</span><input type="range" id="cab-slider" min="1989" max="2030" value="2026" aria-label="Year"><select id="cab-country" aria-label="Country"></select></div>
   <svg class="main" id="m-cab" viewBox="0 0 960 470"></svg><div class="legend" id="lg-cab"></div><aside id="ld-cab" hidden></aside>
 </article>
 
-<article class="card  s07"><header class="cap"><h2>Refugee flows</h2><span class="where">World</span><span class="s">UNHCR, end-2024, click a country</span></header>
+<article class="card  s07" id="refugee-flows"><header class="cap"><h2>Refugee flows</h2><span class="where">World</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">UNHCR, end-2024, click a country</span></header>
   <div class="controls"><div class="seg" role="group" aria-label="View"><button type="button" id="rf-out" aria-pressed="true">Fled from</button><button type="button" id="rf-in" aria-pressed="false">Hosted in</button></div></div>
   <svg class="main" id="m-rf" viewBox="0 0 960 470"></svg><div class="legend" id="lg-rf"></div><aside id="ld-rf" hidden></aside>
 </article>
-<article class="card  s08"><header class="cap"><h2>Undernourishment</h2><span class="where">World</span><span class="s">FAO via World Bank, 2024</span></header>
+<article class="card  s08" id="undernourishment"><header class="cap"><h2>Undernourishment</h2><span class="where">World</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">FAO via World Bank, 2024</span></header>
   <svg class="main" id="m-hun" viewBox="0 0 960 470"></svg><div class="legend" id="lg-hun"></div><aside id="ld-hun" hidden></aside>
 </article>
-<article class="card  s09"><header class="cap"><h2>Military spending</h2><span class="where">World</span><span class="s">SIPRI via World Bank, 1995–2025</span></header>
+<article class="card  s09" id="military-spending"><header class="cap"><h2>Military spending</h2><span class="where">World</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">SIPRI via World Bank, 1995–2025</span></header>
   <div class="controls"><div class="seg" role="group" aria-label="Measure"><button type="button" id="mil-g" aria-pressed="true">% GDP</button><button type="button" id="mil-u" aria-pressed="false">US$</button></div><button class="play" id="mil-play" type="button">▶ Play</button><span class="yr" id="mil-yr">2025</span><input type="range" id="mil-slider" min="1995" max="2025" value="2025" aria-label="Year"></div>
   <svg class="main" id="m-mil" viewBox="0 0 960 470"></svg><div class="legend" id="lg-mil"></div>
   <div class="chart"><h3 id="c-mil-t"></h3><svg id="c-mil" viewBox="0 0 640 130"></svg></div><aside id="ld-mil" hidden></aside>
 </article>
-<article class="card wide s10"><header class="cap"><h2>Battery mineral mining</h2><span class="where">World</span><span class="s">USGS / BGS, 2025</span></header>
+<article class="card wide s10" id="battery-minerals"><header class="cap"><h2>Battery mineral mining</h2><span class="where">World</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">USGS / BGS, 2025</span></header>
   <div class="controls" id="min-ctl" role="group" aria-label="Mineral"></div><div class="minwrap"><svg class="main" id="m-min" viewBox="0 0 960 470" role="img" aria-label="Battery mineral production map"></svg><div id="min-side"></div></div><div class="legend" id="lg-min"></div>
 </article>
-<article class="card wide fieldcard s11"><header class="cap"><h2>Crop production by municipality</h2><span class="where">Brazil</span><span class="s">IBGE PAM, t/km² by municipality</span></header>
+<article class="card wide fieldcard s11" id="brazil-crops"><header class="cap"><h2>Crop production by municipality</h2><span class="where">Brazil</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">IBGE PAM, t/km² by municipality</span></header>
   <div class="controls"><div class="chips" id="br-chips" role="group" aria-label="Crop"></div></div>
   <div class="fbody"><div class="fmap"><svg class="main" id="br-map" viewBox="0 0 640 620"></svg><div class="legend" id="br-lg"></div></div><div class="side" id="br-side"></div></div>
 </article>
-<article class="card wide fieldcard s12"><header class="cap"><h2>Crop yields by department</h2><span class="where">Argentina</span><span class="s">MAGyP, 1990/91–2024/25</span></header>
+<article class="card wide fieldcard s12" id="argentina-yields"><header class="cap"><h2>Crop yields by department</h2><span class="where">Argentina</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">MAGyP, 1990/91–2024/25</span></header>
   <div class="controls"><div class="chips" id="ar-chips" role="group" aria-label="Crop"></div><button class="play" id="ar-play" type="button">▶ Play</button><span class="yr" id="ar-yr" style="min-width:7ch"></span><input type="range" id="ar-slider" aria-label="Season"></div>
   <div class="fbody"><div class="fmap"><svg class="main" id="ar-map" viewBox="0 0 520 760"></svg><div class="legend" id="ar-lg"></div></div><div class="side" id="ar-side"></div></div>
 </article>
-<article class="card wide fieldcard s13"><header class="cap"><h2>Crop yields by region</h2><span class="where">Europe</span><span class="s">Eurostat, NUTS-2, 2005–2024</span></header>
+<article class="card wide fieldcard s13" id="europe-yields"><header class="cap"><h2>Crop yields by region</h2><span class="where">Europe</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">Eurostat, NUTS-2, 2005–2024</span></header>
   <div class="controls"><div class="chips" id="eu-chips" role="group" aria-label="Crop"></div><button class="play" id="eu-play" type="button">▶ Play</button><span class="yr" id="eu-yr"></span><input type="range" id="eu-slider" min="2005" max="2024" value="2024" aria-label="Year"></div>
   <div class="fbody"><div class="fmap"><svg class="main" id="eu-map" viewBox="0 0 720 640"></svg><div class="legend" id="eu-lg"></div></div><div class="side" id="eu-side"></div></div>
 </article>
-<article class="card wide fieldcard s14"><header class="cap"><h2>Summer drought, 2000–2026</h2><span class="where">US Corn Belt, USA</span><span class="s">US Drought Monitor, DSCI, 2000–2026</span></header>
+<article class="card wide fieldcard s14" id="corn-belt-drought"><header class="cap"><h2>Summer drought, 2000–2026</h2><span class="where">US Corn Belt, USA</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">US Drought Monitor, DSCI, 2000–2026</span></header>
   <div class="controls"><button class="play" id="us-play" type="button">▶ Play</button><span class="yr" id="us-yr"></span><input type="range" id="us-slider" min="2000" max="2026" value="2012" aria-label="Year"></div>
   <div class="fbody"><div class="fmap"><svg class="main" id="us-map" viewBox="0 0 760 520"></svg><div class="legend" id="us-lg"></div></div><div class="side" id="us-side"></div></div>
 </article>
-<article class="card wide fieldcard s15"><header class="cap"><h2>Cattle density, 1990–2024</h2><span class="where">Legal Amazon, Brazil</span><span class="s">IBGE PPM, head/km², 1990–2024</span></header>
+<article class="card wide fieldcard s15" id="amazon-cattle"><header class="cap"><h2>Cattle density, 1990–2024</h2><span class="where">Legal Amazon, Brazil</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">IBGE PPM, head/km², 1990–2024</span></header>
   <div class="controls"><button class="play" id="am-play" type="button">▶ Play</button><span class="yr" id="am-yr"></span><input type="range" id="am-slider" min="0" max="7" value="7" aria-label="Year"></div>
   <div class="fbody"><div class="fmap"><svg class="main" id="am-map" viewBox="0 0 680 560"></svg><div class="legend" id="am-lg"></div></div><div class="side" id="am-side"></div></div>
 </article>
@@ -2216,5 +2223,25 @@ function lineChart(svg, W, H, series, opts){ // series: [{pts:[[x,y]], color, da
   player('#ac-play','#ac-t',450,['▶ RUN','❚❚ HOLD']);
   draw();
 })();
+})();
+</script>
+<script>
+// One URL per map: /mapwall/#slug opens that map, the address follows the map in view, and each title has a copy-link button.
+(()=>{
+  const cards=[...document.querySelectorAll('.grid>.card[id]')];
+  const copy=async(id,btn)=>{ const url=location.href.split('#')[0]+'#'+id;
+    try{ await navigator.clipboard.writeText(url); btn.textContent='Copied'; }
+    catch(e){ const r=document.createRange(), t=document.createElement('span'); t.textContent=url; btn.after(t); r.selectNodeContents(t); const s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='Select and copy'; setTimeout(()=>t.remove(),6000); }
+    setTimeout(()=>btn.textContent='Copy link',1800); };
+  cards.forEach(c=>{ const b=c.querySelector('.maplink'); if(b) b.addEventListener('click',()=>copy(c.id,b)); });
+  // land on the linked map, and again once images and charts have settled the layout
+  const jump=()=>{ const id=decodeURIComponent(location.hash.slice(1)); const el=id&&document.getElementById(id); if(el&&el.matches('.grid>.card')) el.scrollIntoView({block:'start'}); };
+  let userScrolled=false; addEventListener('wheel',()=>userScrolled=true,{passive:true}); addEventListener('touchmove',()=>userScrolled=true,{passive:true}); addEventListener('keydown',()=>userScrolled=true);
+  if(location.hash){ jump(); [600,1500,3000,6000].forEach(t=>setTimeout(()=>{ if(!userScrolled) jump(); },t)); addEventListener('load',()=>{ if(!userScrolled) jump(); }); }
+  addEventListener('hashchange',jump);
+  // keep the address bar on the map being viewed
+  let cur=location.hash.slice(1);
+  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting && e.target.id!==cur && (userScrolled||!location.hash)){ cur=e.target.id; try{ history.replaceState(null,'','#'+cur); }catch(_){} } }); },{rootMargin:'-45% 0px -45% 0px'});
+  cards.forEach(c=>io.observe(c));
 })();
 </script>
