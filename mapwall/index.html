@@ -505,6 +505,17 @@ body{margin:0}
 /* plain location text beside the title */
 .titlerow{align-items:baseline!important}
 .where{border:0!important;border-radius:0!important;padding:0!important;text-transform:none!important;letter-spacing:0!important;font-family:inherit!important;font-size:16px!important;font-weight:500!important;line-height:1.3!important;opacity:.7!important;white-space:normal!important}
+
+/* instructions tucked into a dropdown under each title */
+details.howto{margin:6px 0 4px;max-width:78ch}
+details.howto summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;opacity:.8;padding:2px 0;user-select:none}
+details.howto summary::-webkit-details-marker{display:none}
+details.howto summary::before{content:"";width:0;height:0;border-left:6px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .15s}
+details.howto[open] summary::before{transform:rotate(90deg)}
+details.howto summary:hover{opacity:1}
+details.howto summary:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+details.howto .dek{margin-top:8px!important}
+@media (prefers-reduced-motion:reduce){details.howto summary::before{transition:none}}
 </style>
 <div class="wrap">
 <header class="mast"><a class="mw-back" href="../projects.html">&larr; Projects</a><h1>The Map Wall</h1></header>
@@ -512,7 +523,7 @@ body{margin:0}
 <div class="grid">
 <article class="card bandcard"><section class="band" id="hormuz"><div class="in">
   <div class="titlerow"><h2>Shipping through the Strait of Hormuz</h2><span class="where">Persian Gulf, Iran, Oman, UAE</span></div>
-  <p class="dek">Drag the two bands under the chart to set a baseline period and a comparison period. Each port's outline shows its baseline traffic; the filled disc shows the comparison. Switch vessel type, and click any port to trace it.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Drag the two bands under the chart to set a baseline period and a comparison period. Each port's outline shows its baseline traffic; the filled disc shows the comparison. Switch vessel type, and click any port to trace it.</p></details>
   <div class="ctl">
     <label class="k">Vessels</label>
     <div class="seg" role="group" aria-label="Vessel type"><button type="button" data-t="0" aria-pressed="true"><span>All</span></button><button type="button" data-t="1" aria-pressed="false"><span>Tankers</span></button><button type="button" data-t="2" aria-pressed="false"><span>Container</span></button></div>
@@ -530,7 +541,7 @@ body{margin:0}
 </div></section></article>
 <article class="card bandcard"><section class="band" id="gaza"><div class="in">
   <div class="titlerow"><h2>Building damage in Gaza</h2><span class="where">Gaza Strip, Palestine</span></div>
-  <p class="dek">Every dot is a structure UNOSAT found damaged by the selected assessment date. Step through the 14 dates, filter by damage class, and drag the black lens over any neighbourhood (resize it with the slider) to count what happened inside it over time.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Every dot is a structure UNOSAT found damaged by the selected assessment date. Step through the 14 dates, filter by damage class, and drag the black lens over any neighbourhood (resize it with the slider) to count what happened inside it over time.</p></details>
   <div class="ctl"><button class="btn" type="button" id="gz-play">▶ Play</button><div class="cls" id="gz-cls"></div>
     <label class="k" for="gz-r">Lens</label><input type="range" id="gz-r" min="200" max="3000" step="50" value="900" style="max-width:220px"><span class="num" id="gz-rv">900 m</span></div>
   <div class="ticks" id="gz-ticks"></div>
@@ -542,7 +553,7 @@ body{margin:0}
 </div></section></article>
 <article class="card satcard"><section class="band" id="kak"><div class="in">
   <div class="titlerow"><h2>Kakhovka Reservoir after the dam breach</h2><span class="where">Kherson, Zaporizhzhia, Ukraine</span></div>
-  <p class="dek">Two sliders. The horizontal one moves through time; the vertical one wipes between the satellite image (above the line) and a land-cover map computed from it (below). Click anywhere to see how that spot changed across all eleven dates.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Two sliders. The horizontal one moves through time; the vertical one wipes between the satellite image (above the line) and a land-cover map computed from it (below). Click anywhere to see how that spot changed across all eleven dates.</p></details>
   <div class="g2" style="margin-top:14px">
     <div class="stage">
       <div class="viewer"><canvas id="kak-c" width="2054" height="1431" aria-label="Kakhovka reservoir imagery and land cover"></canvas>
@@ -556,7 +567,7 @@ body{margin:0}
 </div></section></article>
 <article class="card bandcard"><section class="band" id="sudan"><div class="in">
   <div class="titlerow"><h2>Food insecurity in Sudan</h2><span class="where">Sudan</span></div>
-  <p class="dek">Two IPC periods sit on top of each other. Drag the black handle to wipe from one to the other, choose what the colours measure, and click localities (or pick a region) to add up how many people are in each phase in both periods.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Two IPC periods sit on top of each other. Drag the black handle to wipe from one to the other, choose what the colours measure, and click localities (or pick a region) to add up how many people are in each phase in both periods.</p></details>
   <div class="ctl">
     <label class="k" for="sd-a">Left</label><select id="sd-a"></select>
     <label class="k" for="sd-b">Right</label><select id="sd-b"></select>
@@ -572,7 +583,7 @@ body{margin:0}
 </div></section></article>
 <article class="card satcard"><section class="band" id="sindh"><div class="in">
   <div class="titlerow"><h2>Cropland flooded in 2022</h2><span class="where">Dadu, Kamber-Shahdadkot, Sindh, Pakistan</span></div>
-  <p class="dek">Drag the pink handle to compare the satellite image with the flood map. Step through the months as the water spreads and drains, and click a tehsil to see how much of its cropland was under water at each date.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Drag the pink handle to compare the satellite image with the flood map. Step through the months as the water spreads and drains, and click a tehsil to see how much of its cropland was under water at each date.</p></details>
   <div class="ctl"><button class="btn" type="button" id="sn-play">▶ Play</button><span class="date num" id="sn-d"></span><input type="range" id="sn-t" min="0" max="8" value="3" aria-label="Date">
     <button class="btn" type="button" id="sn-bnd" aria-pressed="true">Tehsil lines</button></div>
   <div class="g2">
@@ -586,7 +597,7 @@ body{margin:0}
 </div></section></article>
 <article class="card bandcard"><section class="band" id="cox"><div class="in">
   <div class="titlerow"><h2>Walking access to services in refugee camps</h2><span class="where">Cox's Bazar, Bangladesh</span></div>
-  <p class="dek">Click anywhere inside the camps to drop a shelter pin, then set how far someone can walk. The panel lists what is in reach and how far the nearest of each service is. Scroll or pinch to zoom. Toggle the 2021 fire footprint and landslide-prone facilities.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Click anywhere inside the camps to drop a shelter pin, then set how far someone can walk. The panel lists what is in reach and how far the nearest of each service is. Scroll or pinch to zoom. Toggle the 2021 fire footprint and landslide-prone facilities.</p></details>
   <div class="ctl">
     <label class="k" for="cx-r">Walk radius</label><input type="range" id="cx-r" min="100" max="1500" step="50" value="400"><span class="num" id="cx-rv" style="min-width:6ch">400 m</span>
     <button class="btn" type="button" id="cx-fire" aria-pressed="false">2021 fire extent</button>
@@ -602,7 +613,7 @@ body{margin:0}
 </div></section></article>
 <article class="card satcard"><section class="band" id="eaton"><div class="in">
   <div class="titlerow"><h2>Eaton fire damage</h2><span class="where">Altadena, California, USA</span></div>
-  <p class="dek">18,428 structures inspected on the ground, laid over Sentinel-2 imagery before, just after and in the months following the fire. Change the image date, fade in burn severity, and drag across the histogram to select a burn-severity range and see which buildings fall in it. Scroll to zoom, drag to pan.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">18,428 structures inspected on the ground, laid over Sentinel-2 imagery before, just after and in the months following the fire. Change the image date, fade in burn severity, and drag across the histogram to select a burn-severity range and see which buildings fall in it. Scroll to zoom, drag to pan.</p></details>
   <div class="ctl"><div class="chips" id="et-dates"></div></div>
   <div class="ctl"><label class="k" for="et-o">Burn severity</label><input type="range" id="et-o" min="0" max="1" step="0.05" value="0.55" style="max-width:220px"><div class="chips" id="et-cls"></div></div>
   <div class="g2">
@@ -613,7 +624,7 @@ body{margin:0}
 </div></section></article>
 <article class="card bandcard"><section class="band" id="funafuti"><div class="in">
   <div class="titlerow"><h2>Sea-level rise on an atoll</h2><span class="where">Funafuti, Tuvalu</span></div>
-  <p class="dek">Raise the sea and see which land floods. Switch between a bathtub fill and flooding that has to connect to the ocean or lagoon, add a king tide on top, and drag a line across any islet to draw its elevation profile.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Raise the sea and see which land floods. Switch between a bathtub fill and flooding that has to connect to the ocean or lagoon, add a king tide on top, and drag a line across any islet to draw its elevation profile.</p></details>
   <div class="ctl">
     <label class="k" for="fn-s">Sea level rise</label><input type="range" id="fn-s" min="0" max="3" step="0.05" value="0.56"><span class="lvl num" id="fn-sv">+0.56 m</span>
     <div class="seg" role="group" aria-label="Scenario" id="fn-scn"><button type="button" data-v="0.44" aria-pressed="false"><span>SSP1-2.6</span></button><button type="button" data-v="0.56" aria-pressed="true"><span>SSP2-4.5</span></button><button type="button" data-v="0.77" aria-pressed="false"><span>SSP5-8.5</span></button><button type="button" data-v="2" aria-pressed="false"><span>2 m</span></button></div>
@@ -629,7 +640,7 @@ body{margin:0}
 </div></section></article>
 <article class="card satcard"><section class="band" id="manaus"><div class="in">
   <div class="titlerow"><h2>Rio Negro drought</h2><span class="where">Manaus, Amazonas, Brazil</span></div>
-  <p class="dek">Nine cloud-masked images of the Rio Negro and Solimões at Manaus, 2022–2026, from July high water to October low water. Move through time and pin a reference date to trace its shoreline in gold. Drag a line across the river to measure its wet width on every date.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Nine cloud-masked images of the Rio Negro and Solimões at Manaus, 2022–2026, from July high water to October low water. Move through time and pin a reference date to trace its shoreline in gold. Drag a line across the river to measure its wet width on every date.</p></details>
   <div class="ctl"><button class="btn" type="button" id="mn-play">▶ Play</button><span class="date num" id="mn-d"></span><input type="range" id="mn-t" min="0" max="8" value="5" aria-label="Date">
     <label class="k" for="mn-ref">shoreline of</label><select id="mn-ref"></select></div>
   <div class="g2">
@@ -640,7 +651,7 @@ body{margin:0}
 </div></section></article>
 <article class="card satcard"><section class="band" id="amacro"><div class="in">
   <div class="titlerow"><h2>Deforestation, 2008–2025</h2><span class="where">Rondônia, Amazonas, Acre, Brazil</span></div>
-  <p class="dek">Every polygon of forest that Brazil's PRODES programme mapped as cleared, coloured by the year it fell. Drag the year, move the circular scanner to see the real Sentinel-2 image underneath, and brush the bar chart to isolate a range of years. Click a polygon for its record.</p>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Every polygon of forest that Brazil's PRODES programme mapped as cleared, coloured by the year it fell. Drag the year, move the circular scanner to see the real Sentinel-2 image underneath, and brush the bar chart to isolate a range of years. Click a polygon for its record.</p></details>
   <div class="ctl"><button class="btn" type="button" id="ac-play">▶ RUN</button><span class="date num" id="ac-d">2025</span><input type="range" id="ac-t" min="2008" max="2025" value="2025" aria-label="Year">
     <label class="k" for="ac-r">scanner</label><input type="range" id="ac-r" min="60" max="500" value="220" style="max-width:180px"><button class="btn" type="button" id="ac-inv" aria-pressed="false">Invert scanner</button></div>
   <div class="g2">
