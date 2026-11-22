@@ -134,7 +134,7 @@ nav.sections a[aria-current="page"] { color: #0a1128; background: var(--gold); }
 }
 .fl-tabs button:hover, .fl-ctl button:hover { color: var(--ink); border-color: var(--gold); }
 .fl-tabs button[aria-pressed="true"] { color: #0a1128; background: var(--gold); border-color: var(--gold); }
-.fl-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.fl-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
 .fl-stat { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px 14px; }
 .fl-stat b { display: block; font: 400 30px/1.05 var(--display); letter-spacing: 0.03em; color: var(--gold); }
 .fl-stat span { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
