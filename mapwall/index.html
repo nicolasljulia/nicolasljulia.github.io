@@ -500,6 +500,67 @@ body{margin:0}
 <header class="mast"><a class="mw-back" href="../projects.html">&larr; Projects</a><h1>The Map Wall</h1></header>
 
 <div class="grid">
+<article class="card satcard"><section class="band" id="kak"><div class="in">
+  <h2 id="kak-h">The reservoir that became a forest</h2>
+  <p class="dek">Two sliders. The horizontal one moves through time; the vertical one wipes between the satellite image (above the line) and a land-cover map computed from it (below). Click anywhere to see how that spot changed across all eleven dates.</p>
+  <div class="g2" style="margin-top:14px">
+    <div class="stage">
+      <div class="viewer"><canvas id="kak-c" width="2054" height="1431" aria-label="Kakhovka reservoir imagery and land cover"></canvas>
+        <div class="vwrap"><span>SAT</span><input class="vert" type="range" id="kak-v" min="0" max="100" value="55" aria-label="Wipe between satellite and land-cover map" aria-orientation="vertical"><span>MAP</span></div></div>
+      <div class="timebar"><button class="btn" type="button" id="kak-play">▶</button><span class="date num" id="kak-d"></span><input type="range" id="kak-t" min="0" max="10" value="0" aria-label="Date"></div>
+      <div class="lg" id="kak-lg" style="margin-top:8px"></div>
+    </div>
+    <div class="panel" id="kak-side"></div>
+  </div>
+  <p class="src">Imagery: Copernicus Sentinel-2 L2A via Earth Search (AWS), cloud-masked best-pixel mosaics per period. Land cover is classified on each mosaic: water (MNDWI &gt; 0 with low NIR), bare (NDVI &lt; 0.15), sparse vegetation (0.15–0.35) and dense vegetation (&gt; 0.35). The reservoir footprint is the water mapped in July 2022. The Kakhovka dam was destroyed on 6 June 2023.</p>
+</div></section></article>
+<article class="card satcard"><section class="band" id="sindh"><div class="in">
+  <h2 id="sn-h">Where the floodwater sat on the fields</h2>
+  <p class="dek">Drag the pink handle to compare the satellite image with the flood map. Step through the months as the water spreads and drains, and click a tehsil to see how much of its cropland was under water at each date.</p>
+  <div class="ctl"><button class="btn" type="button" id="sn-play">▶ Play</button><span class="date num" id="sn-d"></span><input type="range" id="sn-t" min="0" max="8" value="3" aria-label="Date">
+    <button class="btn" type="button" id="sn-bnd" aria-pressed="true">Tehsil lines</button></div>
+  <div class="g2">
+    <div class="stage"><div class="frame" id="sn-frame"><canvas id="sn-c" width="1100" height="1300" aria-label="Sindh flood swipe map"></canvas>
+      <div class="tag" style="left:8px">◂ Satellite</div><div class="tag" style="right:8px">Flooded cropland ▸</div><div class="handle" id="sn-hd"><span>⇆</span></div></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font:13px Karla;margin-top:8px"><span><i style="display:inline-block;width:12px;height:12px;background:#ff3d8b;vertical-align:-1px"></i> Flooded cropland</span><span><i style="display:inline-block;width:12px;height:12px;background:#2b2f8f;vertical-align:-1px"></i> Other water</span><span><i style="display:inline-block;width:12px;height:12px;background:#b9d98a;vertical-align:-1px"></i> Cropland, dry</span></div>
+    </div>
+    <div class="panel" id="sn-side"></div>
+  </div>
+  <p class="src">Imagery: Sentinel-2 L2A mosaics (cloud-masked; monsoon dates have gaps where clouds persisted, counted as no data). Cropland: ESA WorldCover 2021 (10 m, cropland class). Flooded cropland = cropland pixels classified as water at the date that were not water in September 2021. Tehsil boundaries: geoBoundaries ADM3.</p>
+</div></section></article>
+<article class="card satcard"><section class="band" id="eaton"><div class="in">
+  <h2>Satellite says <span>burned</span>. Inspectors say <span>destroyed</span>.</h2>
+  <p class="dek">18,428 structures inspected on the ground, laid over Sentinel-2 imagery before, just after and in the months following the fire. Change the image date, fade in burn severity, and drag across the histogram to select a burn-severity range and see which buildings fall in it. Scroll to zoom, drag to pan.</p>
+  <div class="ctl"><div class="chips" id="et-dates"></div></div>
+  <div class="ctl"><label class="k" for="et-o">Burn severity</label><input type="range" id="et-o" min="0" max="1" step="0.05" value="0.55" style="max-width:220px"><div class="chips" id="et-cls"></div></div>
+  <div class="g2">
+    <div class="stage"><canvas id="et-c" width="1380" height="1000" aria-label="Eaton fire imagery and structures"></canvas></div>
+    <div class="panel" id="et-side"></div>
+  </div>
+  <p class="src">Structures: CAL FIRE Damage Inspection (DINS) 2025 Eaton, public view. Fire perimeter: Palisades and Eaton dissolved perimeters (21 January 2025). Burn severity: differenced Normalized Burn Ratio (dNBR, Sentinel-2 B8A/B12) against the 18 December 2024 image, with USGS class thresholds (0.1, 0.27, 0.44, 0.66).</p>
+</div></section></article>
+<article class="card satcard"><section class="band" id="manaus"><div class="in">
+  <h2 id="mn-h">The year the Rio Negro ran out of river</h2>
+  <p class="dek">Nine cloud-masked images of the Rio Negro and Solimões at Manaus, 2022–2026, from July high water to October low water. Move through time and pin a reference date to trace its shoreline in gold. Drag a line across the river to measure its wet width on every date.</p>
+  <div class="ctl"><button class="btn" type="button" id="mn-play">▶ Play</button><span class="date num" id="mn-d"></span><input type="range" id="mn-t" min="0" max="8" value="5" aria-label="Date">
+    <label class="k" for="mn-ref">shoreline of</label><select id="mn-ref"></select></div>
+  <div class="g2">
+    <div class="stage"><canvas id="mn-c" width="2250" height="1340" aria-label="Rio Negro imagery with shoreline and transect"></canvas></div>
+    <div class="panel" id="mn-side"></div>
+  </div>
+  <p class="src">Imagery: Sentinel-2 L2A, 30 m, cloud-masked mosaics per month. Water: MNDWI &gt; 0 with low NIR (sediment-laden Solimões water included). Areas are of the mapped window only and count clear pixels; widths are measured along your line on each image.</p>
+</div></section></article>
+<article class="card satcard"><section class="band" id="amacro"><div class="in">
+  <h2>Mapping the clearing, year by year</h2>
+  <p class="dek">Every polygon of forest that Brazil's PRODES programme mapped as cleared, coloured by the year it fell. Drag the year, move the circular scanner to see the real Sentinel-2 image underneath, and brush the bar chart to isolate a range of years. Click a polygon for its record.</p>
+  <div class="ctl"><button class="btn" type="button" id="ac-play">▶ RUN</button><span class="date num" id="ac-d">2025</span><input type="range" id="ac-t" min="2008" max="2025" value="2025" aria-label="Year">
+    <label class="k" for="ac-r">scanner</label><input type="range" id="ac-r" min="60" max="500" value="220" style="max-width:180px"><button class="btn" type="button" id="ac-inv" aria-pressed="false">Invert scanner</button></div>
+  <div class="g2">
+    <div class="stage"><canvas id="ac-c" width="2470" height="1735" aria-label="AMACRO deforestation polygons with satellite scanner"></canvas></div>
+    <div class="panel" id="ac-side"></div>
+  </div>
+  <p class="src">Deforestation: INPE PRODES Legal Amazon yearly deforestation polygons (TerraBrasilis WFS), window 66.6–65.6°W, 9.9–9.2°S. Imagery: Sentinel-2 L2A dry-season (July–mid-September) mosaics; the scanner shows the most recent image at or before the selected year (2018 for earlier years).</p>
+</div></section></article>
 <article class="card bandcard"><section class="band" id="hormuz"><div class="in">
   <h2>The strait went quiet in March 2026: ports inside the Gulf lost two-thirds of their traffic, ports outside it a third</h2>
   <p class="dek">Drag the two bands under the chart to set a baseline period and a comparison period. Each port's outline shows its baseline traffic; the filled disc shows the comparison. Switch vessel type, and click any port to trace it.</p>
@@ -578,67 +639,11 @@ body{margin:0}
   </div>
   <p class="src">Source: Copernicus GLO-30 Digital Surface Model (heights above EGM2008 geoid; includes trees and buildings, so true ground is lower and flooding is understated). Scenarios: IPCC AR6 median global mean sea-level rise by 2100 vs. 1995–2014. King-tide height is an approximate addition, not a local tide model.</p>
 </div></section></article>
-<article class="card satcard"><section class="band" id="kak"><div class="in">
-  <h2 id="kak-h">The reservoir that became a forest</h2>
-  <p class="dek">Two sliders. The horizontal one moves through time; the vertical one wipes between the satellite image (above the line) and a land-cover map computed from it (below). Click anywhere to see how that spot changed across all eleven dates.</p>
-  <div class="g2" style="margin-top:14px">
-    <div class="stage">
-      <div class="viewer"><canvas id="kak-c" width="2054" height="1431" aria-label="Kakhovka reservoir imagery and land cover"></canvas>
-        <div class="vwrap"><span>SAT</span><input class="vert" type="range" id="kak-v" min="0" max="100" value="55" aria-label="Wipe between satellite and land-cover map" aria-orientation="vertical"><span>MAP</span></div></div>
-      <div class="timebar"><button class="btn" type="button" id="kak-play">▶</button><span class="date num" id="kak-d"></span><input type="range" id="kak-t" min="0" max="10" value="0" aria-label="Date"></div>
-      <div class="lg" id="kak-lg" style="margin-top:8px"></div>
-    </div>
-    <div class="panel" id="kak-side"></div>
-  </div>
-  <p class="src">Imagery: Copernicus Sentinel-2 L2A via Earth Search (AWS), cloud-masked best-pixel mosaics per period. Land cover is classified on each mosaic: water (MNDWI &gt; 0 with low NIR), bare (NDVI &lt; 0.15), sparse vegetation (0.15–0.35) and dense vegetation (&gt; 0.35). The reservoir footprint is the water mapped in July 2022. The Kakhovka dam was destroyed on 6 June 2023.</p>
-</div></section></article>
-<article class="card satcard"><section class="band" id="sindh"><div class="in">
-  <h2 id="sn-h">Where the floodwater sat on the fields</h2>
-  <p class="dek">Drag the pink handle to compare the satellite image with the flood map. Step through the months as the water spreads and drains, and click a tehsil to see how much of its cropland was under water at each date.</p>
-  <div class="ctl"><button class="btn" type="button" id="sn-play">▶ Play</button><span class="date num" id="sn-d"></span><input type="range" id="sn-t" min="0" max="8" value="3" aria-label="Date">
-    <button class="btn" type="button" id="sn-bnd" aria-pressed="true">Tehsil lines</button></div>
-  <div class="g2">
-    <div class="stage"><div class="frame" id="sn-frame"><canvas id="sn-c" width="1100" height="1300" aria-label="Sindh flood swipe map"></canvas>
-      <div class="tag" style="left:8px">◂ Satellite</div><div class="tag" style="right:8px">Flooded cropland ▸</div><div class="handle" id="sn-hd"><span>⇆</span></div></div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font:13px Karla;margin-top:8px"><span><i style="display:inline-block;width:12px;height:12px;background:#ff3d8b;vertical-align:-1px"></i> Flooded cropland</span><span><i style="display:inline-block;width:12px;height:12px;background:#2b2f8f;vertical-align:-1px"></i> Other water</span><span><i style="display:inline-block;width:12px;height:12px;background:#b9d98a;vertical-align:-1px"></i> Cropland, dry</span></div>
-    </div>
-    <div class="panel" id="sn-side"></div>
-  </div>
-  <p class="src">Imagery: Sentinel-2 L2A mosaics (cloud-masked; monsoon dates have gaps where clouds persisted, counted as no data). Cropland: ESA WorldCover 2021 (10 m, cropland class). Flooded cropland = cropland pixels classified as water at the date that were not water in September 2021. Tehsil boundaries: geoBoundaries ADM3.</p>
-</div></section></article>
-<article class="card satcard"><section class="band" id="eaton"><div class="in">
-  <h2>Satellite says <span>burned</span>. Inspectors say <span>destroyed</span>.</h2>
-  <p class="dek">18,428 structures inspected on the ground, laid over Sentinel-2 imagery before, just after and in the months following the fire. Change the image date, fade in burn severity, and drag across the histogram to select a burn-severity range and see which buildings fall in it. Scroll to zoom, drag to pan.</p>
-  <div class="ctl"><div class="chips" id="et-dates"></div></div>
-  <div class="ctl"><label class="k" for="et-o">Burn severity</label><input type="range" id="et-o" min="0" max="1" step="0.05" value="0.55" style="max-width:220px"><div class="chips" id="et-cls"></div></div>
-  <div class="g2">
-    <div class="stage"><canvas id="et-c" width="1380" height="1000" aria-label="Eaton fire imagery and structures"></canvas></div>
-    <div class="panel" id="et-side"></div>
-  </div>
-  <p class="src">Structures: CAL FIRE Damage Inspection (DINS) 2025 Eaton, public view. Fire perimeter: Palisades and Eaton dissolved perimeters (21 January 2025). Burn severity: differenced Normalized Burn Ratio (dNBR, Sentinel-2 B8A/B12) against the 18 December 2024 image, with USGS class thresholds (0.1, 0.27, 0.44, 0.66).</p>
-</div></section></article>
-<article class="card satcard"><section class="band" id="manaus"><div class="in">
-  <h2 id="mn-h">The year the Rio Negro ran out of river</h2>
-  <p class="dek">Nine cloud-masked images of the Rio Negro and Solimões at Manaus, 2022–2026, from July high water to October low water. Move through time and pin a reference date to trace its shoreline in gold. Drag a line across the river to measure its wet width on every date.</p>
-  <div class="ctl"><button class="btn" type="button" id="mn-play">▶ Play</button><span class="date num" id="mn-d"></span><input type="range" id="mn-t" min="0" max="8" value="5" aria-label="Date">
-    <label class="k" for="mn-ref">shoreline of</label><select id="mn-ref"></select></div>
-  <div class="g2">
-    <div class="stage"><canvas id="mn-c" width="2250" height="1340" aria-label="Rio Negro imagery with shoreline and transect"></canvas></div>
-    <div class="panel" id="mn-side"></div>
-  </div>
-  <p class="src">Imagery: Sentinel-2 L2A, 30 m, cloud-masked mosaics per month. Water: MNDWI &gt; 0 with low NIR (sediment-laden Solimões water included). Areas are of the mapped window only and count clear pixels; widths are measured along your line on each image.</p>
-</div></section></article>
-<article class="card satcard"><section class="band" id="amacro"><div class="in">
-  <h2>Mapping the clearing, year by year</h2>
-  <p class="dek">Every polygon of forest that Brazil's PRODES programme mapped as cleared, coloured by the year it fell. Drag the year, move the circular scanner to see the real Sentinel-2 image underneath, and brush the bar chart to isolate a range of years. Click a polygon for its record.</p>
-  <div class="ctl"><button class="btn" type="button" id="ac-play">▶ RUN</button><span class="date num" id="ac-d">2025</span><input type="range" id="ac-t" min="2008" max="2025" value="2025" aria-label="Year">
-    <label class="k" for="ac-r">scanner</label><input type="range" id="ac-r" min="60" max="500" value="220" style="max-width:180px"><button class="btn" type="button" id="ac-inv" aria-pressed="false">Invert scanner</button></div>
-  <div class="g2">
-    <div class="stage"><canvas id="ac-c" width="2470" height="1735" aria-label="AMACRO deforestation polygons with satellite scanner"></canvas></div>
-    <div class="panel" id="ac-side"></div>
-  </div>
-  <p class="src">Deforestation: INPE PRODES Legal Amazon yearly deforestation polygons (TerraBrasilis WFS), window 66.6–65.6°W, 9.9–9.2°S. Imagery: Sentinel-2 L2A dry-season (July–mid-September) mosaics; the scanner shows the most recent image at or before the selected year (2018 for earlier years).</p>
-</div></section></article>
+
+
+
+
+
 <article class="card wide s01"><header class="cap"><h2>Brazil soy, 2004 → 2024</h2><span class="s">IBGE PAM · t/km² by municipality</span></header>
   <div class="pair"><div><h3>2004</h3><svg id="br-a" class="main" viewBox="0 0 480 470"></svg></div><div><h3>2024</h3><svg id="br-b" class="main" viewBox="0 0 480 470"></svg></div></div>
   <div class="legend" id="lg-br"></div><aside id="ld-br" hidden></aside>
