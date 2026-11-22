@@ -155,3 +155,8 @@ nav.sections a[aria-current="page"] { color: #0a1128; background: var(--gold); }
   .fl-stats { grid-template-columns: repeat(2, 1fr); }
   .fl-bar { flex-direction: column; align-items: flex-start; }
 }
+
+/* map wall feature on the projects page */
+.mapwall-feature { margin: 8px 0 8px; padding-bottom: 28px; border-bottom: 1px solid var(--card-border); }
+.mapwall-feature h1 { margin-bottom: 12px; }
+.mapwall-lede { font-size: 20px; color: var(--ink-dim); margin: 0 0 20px; }
