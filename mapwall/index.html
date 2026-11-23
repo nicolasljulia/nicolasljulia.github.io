@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@500;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Mono:wght@400;700&family=Inter+Tight:wght@400;600;800;900&family=JetBrains+Mono:wght@400;600&family=Manrope:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;800&family=Courier+Prime:wght@400;700&family=Exo+2:wght@500;800&family=Rajdhani:wght@500;700&family=Work+Sans:wght@400;700;900&family=Sora:wght@400;700&family=DM+Serif+Display&family=DM+Sans:wght@400;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,800&family=Libre+Franklin:wght@400;800;900&family=Black+Ops+One&family=Roboto+Mono:wght@400;600&family=Space+Grotesk:wght@400;700&family=Young+Serif&family=Barlow:wght@400;700&family=Lexend:wght@400;700&family=Alfa+Slab+One&family=Zilla+Slab:wght@400;700&family=Azeret+Mono:wght@400;600&family=Martian+Mono:wght@400;600&family=Fragment+Mono&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Archivo+Black&family=Karla:wght@400;600;700&family=Big+Shoulders+Display:wght@600;800;900&family=Inter:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Chakra+Petch:wght@500;700&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;800&family=Spline+Sans+Mono:wght@400;600&family=Syne:wght@600;800&family=Red+Hat+Mono:wght@400;600;700&display=swap">
 <style>/* Layout: one wall of maps — interactive plates in a two-up grid, then a contact-sheet grid of the static maps. */
 :root{--paper:#f1f3f4;--plate:#ffffff;--ink:#151b20;--ink-2:#47525c;--ink-3:#7b8690;--rule:#d7dde2;--land:#e2e6e9;--nodata:#eceff1;--border:#ffffff;
  --accent:#2a6390;--accent-soft:#d6e5f0;--sea:#f7f9fa;--ice:#bfe0f5;--ice-edge:#2b7bb9;--hot:#c0392b;--tip-bg:#151b20;--tip-fg:#f1f3f4;--scrim:rgba(10,14,18,.86);
@@ -523,6 +524,46 @@ details.howto .dek{margin-top:8px!important}
 .maplink:hover{opacity:1}
 .maplink:focus-visible{outline:2px solid currentColor;outline-offset:3px;opacity:1}
 .grid>.card>.cap .maplink{margin:2px 0}
+
+/* ---- Mexico drought: Talavera white and cobalt ---- */
+.card.mxd{--plate:#fbfcff;--ink:#0f2a6b;--ink-2:#3c5390;--ink-3:#6b7fb3;--rule:#cdd6ee;--land:#eef1f9;--nodata:#e9ecf4;--accent:#1d4fc4;--border:#fbfcff;
+  --display:"Epilogue",sans-serif;--body:"Epilogue",sans-serif;--mono:"Spline Sans Mono",monospace;background:#fbfcff;color:#0f2a6b;font-family:"Epilogue",sans-serif;
+  border:0;border-radius:0;box-shadow:inset 0 0 0 10px #fbfcff,inset 0 0 0 12px #1d4fc4}
+.card.mxd .cap h2{font-weight:800;font-size:clamp(26px,3vw,38px)!important;letter-spacing:-.02em}
+.card.mxd .seg{border-color:#1d4fc4} .card.mxd .seg button{color:#1d4fc4} .card.mxd .seg button[aria-pressed="true"]{background:#1d4fc4;color:#fbfcff}
+.card.mxd .lbl{stroke:#fbfcff;fill:#0f2a6b}
+/* ---- Michoacán forest: volcanic basalt and avocado ---- */
+.card.mxf{--plate:#121514;--ink:#e8efe0;--ink-2:#a9b8a0;--ink-3:#7f8f78;--rule:#2a312c;--land:#1b201d;--nodata:#1b201d;--accent:#9bc53d;--border:#121514;
+  --display:"Syne",sans-serif;--body:"Red Hat Mono",monospace;--mono:"Red Hat Mono",monospace;background:radial-gradient(900px 400px at 20% 0%,#1d2a1e,#121514 70%);color:#e8efe0;font-family:"Red Hat Mono",monospace;
+  border:1px solid #2f3a31;border-radius:22px}
+.card.mxf .cap h2{font-weight:800;font-size:clamp(26px,3.2vw,40px)!important;letter-spacing:-.01em}
+.card.mxf .seg{border-color:#9bc53d} .card.mxf .seg button{color:#e8efe0} .card.mxf .seg button[aria-pressed="true"]{background:#9bc53d;color:#121514}
+.card.mxf .lbl{stroke:#121514;fill:#e8efe0}
+/* ---- shared Mexico layout ---- */
+.mxgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start;width:100%}
+@media (max-width:940px){.mxgrid{grid-template-columns:minmax(0,1fr)}}
+.mxstage{display:grid;gap:10px;min-width:0}
+.mxstage svg,.mxstage canvas{display:block;width:100%;height:auto;touch-action:none}
+.mxside{display:grid;gap:14px;min-width:0;font-size:13.5px}
+.mxside .box{border-top:2px solid currentColor;padding-top:8px;display:grid;gap:4px}
+.mxside .lt{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.mxside .big{font:800 32px/1.05 var(--display);font-variant-numeric:tabular-nums}
+.mxside .sub{opacity:.8}
+.mxside ol{list-style:none;margin:0;padding:0;display:grid;gap:4px;max-height:280px;overflow:auto}
+.mxside li{display:grid;grid-template-columns:1fr auto;gap:2px 8px;cursor:pointer;padding:2px 3px}
+.mxside li:hover,.mxside li.on{background:color-mix(in srgb,currentColor 12%,transparent)}
+.mxside li .n{font-variant-numeric:tabular-nums;opacity:.8}
+.mxside li .bar{grid-column:1/-1;height:4px;background:color-mix(in srgb,currentColor 15%,transparent)}
+.mxside li .bar b{display:block;height:100%}
+.mxside .strip{display:flex;height:22px;width:100%}
+.mxside .strip i{flex:1 1 0;min-width:0}
+.mxwipe{position:relative;border-radius:12px;overflow:hidden;cursor:crosshair}
+.mxhandle{position:absolute;top:0;bottom:0;width:0;border-left:3px solid #ffffff;cursor:ew-resize;touch-action:none}
+.mxhandle span{position:absolute;top:50%;left:-20px;width:38px;height:38px;margin-top:-19px;border-radius:50%;background:#ffffff;color:#121514;display:grid;place-items:center;font-weight:700}
+.mxbtn{font:inherit;font-size:13px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:5px 12px;cursor:pointer}
+.lbl-k{font-size:12px;opacity:.75;text-transform:uppercase;letter-spacing:.06em}
+.mxcard .axis text{font:10px var(--mono);fill:currentColor;opacity:.8}
+.mxcard .axis line,.mxcard .axis path{stroke:var(--rule)}
 </style>
 <div class="wrap">
 <header class="mast"><a class="mw-back" href="../projects.html">&larr; Projects</a><h1>The Map Wall</h1></header>
@@ -667,6 +708,34 @@ details.howto .dek{margin-top:8px!important}
   </div>
   <p class="src">Deforestation: INPE PRODES Legal Amazon yearly deforestation polygons (TerraBrasilis WFS), window 66.6–65.6°W, 9.9–9.2°S. Imagery: Sentinel-2 L2A dry-season (July–mid-September) mosaics; the scanner shows the most recent image at or before the selected year (2018 for earlier years).</p>
 </div></section></article>
+
+<article class="card wide mxcard mxd" id="mexico-drought"><header class="cap"><h2>Drought across Mexico, 2003–2026</h2><span class="where">Mexico</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">CONAGUA Monitor de Sequía, INEGI Census 2020</span></header>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">The chart under the map shows how many people lived in each drought category, every two weeks since 2003. Click it to see the map on one date, or drag across it to pick a period: the map then shows how much of that period each municipality spent in drought. Change the threshold, and click any municipality for its full record.</p></details>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Threshold" id="mxd-th"><button type="button" data-t="2" aria-pressed="false">Moderate or worse</button><button type="button" data-t="3" aria-pressed="true">Severe or worse</button><button type="button" data-t="4" aria-pressed="false">Extreme or worse</button></div>
+    <div class="seg" role="group" aria-label="Chart weight" id="mxd-w"><button type="button" data-w="pop" aria-pressed="true">People</button><button type="button" data-w="mun" aria-pressed="false">Municipalities</button></div>
+  </div>
+  <div class="mxgrid">
+    <div class="mxstage"><svg id="mxd-map" viewBox="0 0 980 640" role="img" aria-label="Drought by municipality in Mexico"></svg>
+      <svg id="mxd-tl" viewBox="0 0 980 190" role="img" aria-label="National drought timeline, click or drag to choose a date or period"></svg>
+      <div class="legend" id="mxd-lg"></div></div>
+    <aside class="mxside" id="mxd-side"></aside>
+  </div>
+</article>
+<article class="card wide mxcard mxf" id="michoacan-forest"><header class="cap"><h2>Forest loss in the avocado belt, 2001–2024</h2><span class="where">Uruapan, Tancítaro, Los Reyes, Michoacán, Mexico</span><button type="button" class="maplink" aria-label="Copy link to this map">Copy link</button><span class="s">Hansen/UMD Global Forest Change v1.12, Sentinel-2, INEGI</span></header>
+  <details class="howto"><summary>How to use this map</summary><p class="dek">Each coloured pixel is 30 m of tree cover lost, coloured by the year it went. Drag across the bar chart to show only some years. Drag the white handle to wipe between the loss map and real Sentinel-2 imagery from 2019 or 2026. Click a municipality, on the map or in the list, for its record.</p></details>
+  <div class="controls">
+    <span class="lbl-k">Wipe to</span>
+    <div class="seg" role="group" aria-label="Satellite year" id="mxf-yr"><button type="button" data-y="2019" aria-pressed="false">Sentinel-2, 2019</button><button type="button" data-y="2026" aria-pressed="true">Sentinel-2, 2026</button></div>
+    <button type="button" class="mxbtn" id="mxf-clear">Show all years</button>
+  </div>
+  <div class="mxgrid">
+    <div class="mxstage"><div class="mxwipe" id="mxf-wrap"><canvas id="mxf-c" width="2798" height="2226" aria-label="Forest loss map with satellite wipe"></canvas><div class="mxhandle" id="mxf-h"><span>⇆</span></div></div>
+      <div class="legend" id="mxf-lg"></div></div>
+    <aside class="mxside" id="mxf-side"></aside>
+  </div>
+</article>
+
 
 
 
@@ -2225,6 +2294,172 @@ function lineChart(svg, W, H, series, opts){ // series: [{pts:[[x,y]], color, da
 })();
 })();
 </script>
+
+<script>
+(()=>{
+const tipEl=document.getElementById('tip');
+const showT=(e,h)=>{ if(!tipEl) return; tipEl.innerHTML=h; tipEl.style.opacity=1; const w=tipEl.offsetWidth,hh=tipEl.offsetHeight; let x=e.clientX+14,y=e.clientY+14; if(x+w>innerWidth-8)x=e.clientX-w-14; if(y+hh>innerHeight-8)y=e.clientY-hh-14; tipEl.style.left=x+'px'; tipEl.style.top=y+'px'; };
+const hideT=()=>{ if(tipEl) tipEl.style.opacity=0; };
+const fmt=d3.format(','), pct=d3.format('.0%'), f1=d3.format('.1f');
+const J=u=>fetch(u).then(r=>r.json());
+function fixW(fc){ fc.features.forEach(f=>{ const g=f.geometry; if(!g) return; const ps=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[]; ps.forEach(p=>{ if(d3.geoArea({type:'Polygon',coordinates:p})>2*Math.PI) p.forEach(r=>r.reverse()); }); }); return fc; }
+const segBind=(sel,fn)=>{ const b=document.querySelectorAll(sel+' button'); b.forEach(x=>x.addEventListener('click',()=>{ b.forEach(y=>y.setAttribute('aria-pressed',y===x)); fn(x.dataset); })); };
+
+/* ============ Drought across Mexico ============ */
+(async()=>{
+  const [M, ST, D] = await Promise.all([J('mx_munis.json'), J('mx_states.json'), J('mx_drought.json')]); fixW(M); fixW(ST);
+  const dates=D.dates.map(d=>new Date(d+'T12:00')), N=dates.length, codes=D.d;
+  const pop=Object.fromEntries(M.features.map(f=>[f.properties.c,f.properties.p])), TOT=d3.sum(Object.values(pop));
+  const cat=['None','Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'];
+  const catCol=['#eef1f9','#f6e27a','#f2b33d','#e26a2c','#b3261e','#5c0b14'];
+  let th=3, weight='pop', mode='date', di=N-1, win=null, sel=null;
+  const proj=d3.geoConicConformal().parallels([17.5,29.5]).rotate([102,0]).fitExtent([[8,8],[972,632]],ST), P=d3.geoPath(proj);
+  const svg=d3.select('#mxd-map');
+  const mun=svg.append('g').selectAll('path').data(M.features).join('path').attr('d',P).attr('class','hov').style('stroke','#fbfcff').style('stroke-width',.25).style('cursor','pointer');
+  svg.append('g').selectAll('path').data(ST.features).join('path').attr('d',P).style('fill','none').style('stroke','#1d4fc4').style('stroke-width',.9).style('pointer-events','none');
+  const selP=svg.append('path').style('fill','none').style('stroke','#0f2a6b').style('stroke-width',2.4).style('pointer-events','none');
+  // national series: share of people (or municipalities) in each category per date
+  const series=w=>d3.range(N).map(i=>{ const o={i}; for(let k=1;k<=5;k++) o[k]=0; for(const c in codes){ const v=+codes[c][i]; if(v) o[v]+= w==='pop'?(pop[c]||0)/TOT:1/2478; } return o; });
+  const S={pop:series('pop'),mun:series('mun')};
+  const shareCol=d3.scaleThreshold([0.05,0.15,0.3,0.5,0.7],['#eef1f9','#cfdaf6','#9fb5ec','#5b7fd9','#2a51b8','#0f2a6b']);
+  const frac=(c,a,b)=>{ const s=codes[c]; if(!s) return null; let n=0; for(let i=a;i<=b;i++) if(+s[i]>=th) n++; return n/(b-a+1); };
+  function drawMap(){
+    if(mode==='date') mun.style('fill',f=>{ const s=codes[f.properties.c]; return s? catCol[+s[di]] : '#e9ecf4'; });
+    else mun.style('fill',f=>{ const v=frac(f.properties.c,win[0],win[1]); return v==null?'#e9ecf4':shareCol(v); });
+    const lg=d3.select('#mxd-lg'); lg.selectAll('*').remove();
+    if(mode==='date'){ lg.append('span').attr('class','lt').text(d3.timeFormat('%-d %b %Y')(dates[di])); cat.forEach((t,k)=>{ const s=lg.append('span').attr('class','sw'); s.append('i').attr('class','box').style('background',catCol[k]).style('border','1px solid #cdd6ee'); s.append('span').text(t); }); }
+    else { lg.append('span').attr('class','lt').text(`Share of ${d3.timeFormat('%b %Y')(dates[win[0]])}–${d3.timeFormat('%b %Y')(dates[win[1]])} in ${['','','moderate','severe','extreme'][th]} drought or worse`);
+      [['< 5%','#eef1f9'],['5–15%','#cfdaf6'],['15–30%','#9fb5ec'],['30–50%','#5b7fd9'],['50–70%','#2a51b8'],['70%+','#0f2a6b']].forEach(([t,c])=>{ const s=lg.append('span').attr('class','sw'); s.append('i').attr('class','box').style('background',c).style('border','1px solid #cdd6ee'); s.append('span').text(t); }); }
+    const f=sel&&M.features.find(q=>q.properties.c===sel); selP.attr('d',f?P(f):null);
+  }
+  // timeline
+  const tl=d3.select('#mxd-tl'), TW=980, TH=190, x=d3.scaleTime().domain(d3.extent(dates)).range([40,TW-10]), y=d3.scaleLinear().domain([0,1]).range([TH-26,8]);
+  const gy=tl.append('g').attr('class','axis').attr('transform','translate(40,0)').call(d3.axisLeft(y).ticks(4).tickFormat(pct).tickSize(-(TW-50))).call(g=>g.select('.domain').remove());
+  tl.append('g').attr('class','axis').attr('transform',`translate(0,${TH-26})`).call(d3.axisBottom(x).ticks(d3.timeYear.every(2)).tickFormat(d3.timeFormat('%Y')).tickSize(3));
+  const areas=tl.append('g');
+  const marker=tl.append('line').attr('y1',6).attr('y2',TH-26).style('stroke','#0f2a6b').style('stroke-width',2);
+  function drawTL(){
+    const st=d3.stack().keys([5,4,3,2,1])(S[weight]);
+    areas.selectAll('path').data(st).join('path').attr('d',d3.area().x(d=>x(dates[d.data.i])).y0(d=>y(d[0])).y1(d=>y(d[1])).curve(d3.curveStepAfter)).style('fill',d=>catCol[d.key]).style('stroke','none');
+    marker.attr('x1',x(dates[di])).attr('x2',x(dates[di])).style('display',mode==='date'?null:'none');
+  }
+  const brush=d3.brushX().extent([[40,6],[TW-10,TH-26]]).on('end',e=>{ if(!e.sourceEvent) return;
+    if(!e.selection){ const [mx]=d3.pointer(e.sourceEvent,tl.node()); const t=x.invert(mx); di=Math.max(0,Math.min(N-1,d3.bisector(d=>d).center(dates,t))); mode='date'; win=null; }
+    else { const [a,b]=e.selection.map(x.invert); const i0=d3.bisector(d=>d).left(dates,a), i1=Math.max(i0,d3.bisector(d=>d).right(dates,b)-1); if(i1-i0<1){ di=i0; mode='date'; win=null; } else { win=[i0,i1]; mode='period'; } }
+    drawAll(); });
+  const bg=tl.append('g').call(brush); bg.select('.selection').style('fill','#1d4fc4').style('fill-opacity',.15).style('stroke','#1d4fc4');
+  // side panel
+  const side=d3.select('#mxd-side');
+  function panel(){
+    side.selectAll('*').remove();
+    const s=S.pop[di]; const sharePeak=d3.maxIndex(S.pop,o=>o[3]+o[4]+o[5]);
+    const b=side.append('div').attr('class','box');
+    if(mode==='date'){ b.append('div').attr('class','lt').text(d3.timeFormat('%-d %B %Y')(dates[di])); const v=d3.sum(d3.range(th,6),k=>s[k]);
+      b.append('div').attr('class','big').text(pct(v)); b.append('div').attr('class','sub').text(`of people lived in ${['','','moderate','severe','extreme'][th]} drought or worse`); }
+    else { b.append('div').attr('class','lt').text(`${d3.timeFormat('%b %Y')(dates[win[0]])} – ${d3.timeFormat('%b %Y')(dates[win[1]])}`);
+      const v=d3.mean(d3.range(win[0],win[1]+1),i=>d3.sum(d3.range(th,6),k=>S.pop[i][k])); b.append('div').attr('class','big').text(pct(v)); b.append('div').attr('class','sub').text(`of people, on average, in ${['','','moderate','severe','extreme'][th]} drought or worse during the period`); }
+    const pk=side.append('div').attr('class','box'); pk.append('div').attr('class','lt').text('Worst point since 2003');
+    pk.append('div').html(`<b>${pct(S.pop[sharePeak][3]+S.pop[sharePeak][4]+S.pop[sharePeak][5])}</b> of Mexicans in severe drought or worse on ${d3.timeFormat('%-d %B %Y')(dates[sharePeak])}`).style('cursor','pointer').on('click',()=>{ di=sharePeak; mode='date'; win=null; bg.call(brush.move,null); drawAll(); });
+    const c=side.append('div').attr('class','box');
+    if(!sel){ c.append('div').attr('class','lt').text('Municipality'); c.append('div').attr('class','sub').text('Click a municipality on the map to see its drought record.'); }
+    else { const f=M.features.find(q=>q.properties.c===sel), s=codes[sel]||''; const st=D.states[sel.slice(0,2)]||'';
+      c.append('div').attr('class','lt').text(`${f.properties.n}, ${st}`);
+      const strip=c.append('div').attr('class','strip'); for(let i=0;i<N;i+=2) strip.append('i').style('background',catCol[+s[i]||0]);
+      c.append('div').attr('class','sub').style('display','flex').style('justify-content','space-between').html('<span>2003</span><span>2026</span>');
+      let best=0,run=0,bi=0,bs=0,rs=0; for(let i=0;i<N;i++){ if(+s[i]>=th){ if(!run) rs=i; run++; if(run>best){best=run;bs=rs;bi=i;} } else run=0; }
+      const share=frac(sel,0,N-1);
+      c.append('div').html(`${pct(share)} of the record in ${['','','moderate','severe','extreme'][th]} drought or worse.<br>Longest stretch: <b>${best? Math.round((dates[bi]-dates[bs])/2.63e9+0.5)+' months' : 'none'}</b>${best? ` (${d3.timeFormat('%b %Y')(dates[bs])} – ${d3.timeFormat('%b %Y')(dates[bi])})`:''}.<br>Population ${fmt(f.properties.p)}.`); }
+    const r=side.append('div').attr('class','box'); r.append('div').attr('class','lt').text(mode==='date'?'Most people in drought, by state':'Most time in drought, by state');
+    const byS=d3.rollups(M.features,v=>{ const p=d3.sum(v,f=>f.properties.p); const w=d3.sum(v,f=>{ const q= mode==='date'? (+((codes[f.properties.c]||'')[di]||0)>=th?1:0) : (frac(f.properties.c,win[0],win[1])||0); return q*f.properties.p; }); return w/p; }, f=>f.properties.c.slice(0,2)).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const li=r.append('ol').selectAll('li').data(byS).join('li'); li.append('span').text(d=>D.states[d[0]]); li.append('span').attr('class','n').text(d=>pct(d[1]));
+    li.append('span').attr('class','bar').append('b').style('width',d=>d[1]*100+'%').style('background','#1d4fc4');
+  }
+  function drawAll(){ drawMap(); drawTL(); panel(); }
+  mun.on('pointermove',(e,f)=>{ const s=codes[f.properties.c]; const st=D.states[f.properties.c.slice(0,2)]||'';
+      showT(e,`<b>${f.properties.n}, ${st}</b>`+(mode==='date'? `${s?cat[+s[di]]:'No data'} on ${d3.timeFormat('%-d %b %Y')(dates[di])}` : `${pct(frac(f.properties.c,win[0],win[1])||0)} of the period in drought at this level`)+`<br>Population ${fmt(f.properties.p)}`); })
+    .on('pointerleave',hideT).on('click',(e,f)=>{ sel= sel===f.properties.c? null : f.properties.c; drawMap(); panel(); });
+  segBind('#mxd-th',d=>{ th=+d.t; drawAll(); }); segBind('#mxd-w',d=>{ weight=d.w; drawTL(); });
+  sel='19039'; drawAll();
+})();
+
+/* ============ Forest loss in Michoacán's avocado belt ============ */
+(async()=>{
+  const A=await J('mich.json');
+  const ld=src=>new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; });
+  const [han, s19, s26]=await Promise.all([ld('img/mich_hansen.png'),ld('img/mich_s2_2019.jpg'),ld('img/mich_s2_2026.jpg')]);
+  const W=A.w,H=A.h, cv=document.getElementById('mxf-c'), ctx=cv.getContext('2d'); cv.width=W; cv.height=H;
+  const tmp=document.createElement('canvas'); tmp.width=W; tmp.height=H; const tc=tmp.getContext('2d'); tc.drawImage(han,0,0); const px=tc.getImageData(0,0,W,H).data;
+  const V=new Uint8Array(W*H); for(let i=0;i<W*H;i++) V[i]=px[i*4];
+  const layer=document.createElement('canvas'); layer.width=W; layer.height=H; const lc=layer.getContext('2d'); const img=lc.createImageData(W,H);
+  const yc=d3.scaleSequential([2001,2024],t=>d3.interpolateInferno(0.25+0.72*t));
+  const ycRGB=d3.range(0,25).map(y=>{ const c=d3.rgb(yc(2000+Math.max(1,y))); return [c.r,c.g,c.b]; });
+  let range=null, sat='2026', split=0.62, sel=null;
+  const paths=A.munis.map(m=>{ const p=new Path2D(); m.r.forEach(r=>{ r.forEach((c,i)=>i?p.lineTo(c[0],c[1]):p.moveTo(c[0],c[1])); p.closePath(); }); return p; });
+  function paint(){ const d=img.data; const a=range?range[0]-2000:1, b=range?range[1]-2000:24;
+    for(let i=0;i<W*H;i++){ const v=V[i], y=v%100, f=v>=100; let r=20,g=25,bb=22,al=255;
+      if(y && y>=a && y<=b){ const c=ycRGB[y]; r=c[0]; g=c[1]; bb=c[2]; }
+      else if(f){ r=46; g=82; bb=44; if(y){ r=58; g=64; bb=56; } }
+      const k=i*4; d[k]=r; d[k+1]=g; d[k+2]=bb; d[k+3]=al; }
+    lc.putImageData(img,0,0); }
+  const wrap=document.getElementById('mxf-wrap'), handle=document.getElementById('mxf-h');
+  function draw(){
+    const xs=Math.round(W*split);
+    ctx.drawImage(layer,0,0);
+    ctx.save(); ctx.beginPath(); ctx.rect(xs,0,W-xs,H); ctx.clip(); ctx.drawImage(sat==='2019'?s19:s26,0,0,W,H); ctx.restore();
+    ctx.lineWidth=2.5; ctx.strokeStyle='rgba(232,239,224,.55)'; paths.forEach(p=>ctx.stroke(p));
+    if(sel!=null){ ctx.lineWidth=7; ctx.strokeStyle='#9bc53d'; ctx.stroke(paths[sel]); }
+    ctx.font='600 30px "Red Hat Mono"'; ctx.textAlign='center';
+    A.munis.forEach((m,i)=>{ if(m.f2000<3000) return; ctx.lineWidth=6; ctx.strokeStyle='rgba(18,21,20,.85)'; ctx.strokeText(m.n,m.lc[0],m.lc[1]); ctx.fillStyle='#e8efe0'; ctx.fillText(m.n,m.lc[0],m.lc[1]); });
+    ctx.font='700 34px "Red Hat Mono"'; ctx.textAlign='left'; ctx.fillStyle='#ffffff'; ctx.strokeStyle='rgba(0,0,0,.7)'; ctx.lineWidth=6;
+    ctx.strokeText('LOSS MAP',24,50); ctx.fillText('LOSS MAP',24,50); ctx.textAlign='right'; ctx.strokeText(`SENTINEL-2 ${sat}`,W-24,50); ctx.fillText(`SENTINEL-2 ${sat}`,W-24,50);
+    handle.style.left=(split*wrap.clientWidth)+'px';
+    panel();
+  }
+  const side=d3.select('#mxf-side');
+  const yrs=d3.range(2001,2025);
+  function panel(){
+    side.selectAll('*').remove();
+    const lossOf=arr=>d3.sum(yrs,(y,i)=>(!range||(y>=range[0]&&y<=range[1]))?arr[i]:0);
+    const m= sel!=null? A.munis[sel] : null, arr= m? m.loss : A.total, f0= m? m.f2000 : A.forest2000;
+    const b=side.append('div').attr('class','box'); b.append('div').attr('class','lt').text(m? `${m.n}, Michoacán` : 'Whole window');
+    const L=lossOf(arr); b.append('div').attr('class','big').text(`${fmt(Math.round(L/10)*10)} ha`);
+    b.append('div').attr('class','sub').text(`of tree cover lost ${range?range[0]+'–'+range[1]:'2001–2024'}, ${pct(L/f0)} of the ${fmt(Math.round(f0/100)*100)} ha standing in 2000${m?' (within the map frame)':''}`);
+    const c=side.append('div').attr('class','box'); c.append('div').attr('class','lt').text('Loss per year · drag to pick years');
+    const CW=300,CH=150, sv=c.append('svg').attr('viewBox',`0 0 ${CW} ${CH}`).style('width','100%');
+    const x=d3.scaleBand().domain(yrs).range([30,CW-4]).padding(.12), y=d3.scaleLinear().domain([0,d3.max(arr)||1]).nice().range([CH-20,6]);
+    sv.selectAll('rect').data(yrs).join('rect').attr('x',d=>x(d)).attr('width',x.bandwidth()).attr('y',(d,i)=>y(arr[i])).attr('height',(d,i)=>CH-20-y(arr[i])).style('fill',d=>yc(d)).style('opacity',d=>!range||(d>=range[0]&&d<=range[1])?1:.25);
+    sv.append('g').attr('class','axis').attr('transform',`translate(0,${CH-20})`).call(d3.axisBottom(x).tickValues([2001,2006,2012,2018,2024]).tickSize(2));
+    sv.append('g').attr('class','axis').attr('transform','translate(30,0)').call(d3.axisLeft(y).ticks(4).tickFormat(d3.format('~s')).tickSize(-(CW-34))).call(g=>g.select('.domain').remove());
+    const br=d3.brushX().extent([[30,4],[CW-4,CH-20]]).on('end',e=>{ if(!e.sourceEvent) return; if(!e.selection) range=null; else { const s=yrs.filter(q=>x(q)+x.bandwidth()/2>=e.selection[0]&&x(q)+x.bandwidth()/2<=e.selection[1]); range=s.length?[s[0],s.at(-1)]:null; } paint(); draw(); });
+    const g=sv.append('g').call(br); if(range) g.call(br.move,[x(range[0]),x(range[1])+x.bandwidth()]); g.select('.selection').style('fill','#9bc53d').style('fill-opacity',.18).style('stroke','#9bc53d');
+    const r=side.append('div').attr('class','box'); r.append('div').attr('class','lt').text('Municipalities by area lost · click');
+    const rows=A.munis.map((q,i)=>({i,n:q.n,L:lossOf(q.loss),s:lossOf(q.loss)/Math.max(1,q.f2000)})).filter(q=>q.L>50).sort((a,b)=>b.L-a.L);
+    const mx=d3.max(rows,q=>q.L)||1;
+    const li=r.append('ol').selectAll('li').data(rows).join('li').classed('on',q=>q.i===sel).on('click',(e,q)=>{ sel= sel===q.i? null : q.i; draw(); });
+    li.append('span').text(q=>q.n); li.append('span').attr('class','n').text(q=>`${fmt(Math.round(q.L))} ha · ${pct(q.s)}`);
+    li.append('span').attr('class','bar').append('b').style('width',q=>q.L/mx*100+'%').style('background','#9bc53d');
+  }
+  const lg=d3.select('#mxf-lg'); lg.append('span').attr('class','lt').text('Year of loss');
+  const ramp=lg.append('span').attr('class','ramp'); [2001,2006,2012,2018,2024].forEach(y=>{ const s=ramp.append('span'); s.append('i').style('background',yc(y)); s.append('em').style('font-style','normal').text(y); });
+  lg.append('span').attr('class','sw').html('<i class="box" style="background:#2e522c"></i>Tree cover in 2000, still standing');
+  lg.append('span').attr('class','sw').html('<i class="box" style="background:#3a4038"></i>Lost outside the selected years');
+  const toC=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]; };
+  let drag=false;
+  handle.addEventListener('pointerdown',e=>{ drag=true; handle.setPointerCapture(e.pointerId); e.stopPropagation(); });
+  handle.addEventListener('pointermove',e=>{ if(!drag) return; const r=wrap.getBoundingClientRect(); split=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); requestAnimationFrame(draw); });
+  handle.addEventListener('pointerup',()=>drag=false);
+  cv.addEventListener('click',e=>{ const [x,y]=toC(e); const i=paths.findIndex(p=>ctx.isPointInPath(p,x,y)); sel= i<0? null : (sel===i?null:i); draw(); });
+  cv.addEventListener('pointermove',e=>{ const [x,y]=toC(e); const k=Math.floor(y)*W+Math.floor(x); const v=V[k]; const i=paths.findIndex(p=>ctx.isPointInPath(p,x,y));
+    if(i<0){ hideT(); return; } const yv=v%100; showT(e,`<b>${A.munis[i].n}</b>`+(yv? `Tree cover lost in ${2000+yv}` : v>=100? 'Tree cover in 2000, still standing':'Not forest in 2000')); });
+  cv.addEventListener('pointerleave',hideT);
+  segBind('#mxf-yr',d=>{ sat=d.y; draw(); });
+  document.getElementById('mxf-clear').addEventListener('click',()=>{ range=null; paint(); draw(); });
+  addEventListener('resize',()=>{ handle.style.left=(split*wrap.clientWidth)+'px'; });
+  paint(); draw();
+})();
+})();
+</script>
+
 <script>
 // One URL per map: /mapwall/#slug opens that map, the address follows the map in view, and each title has a copy-link button.
 (()=>{
